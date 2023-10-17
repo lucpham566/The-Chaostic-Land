@@ -4,6 +4,7 @@ using UnityEngine;
 public enum ItemType
 {
     VuKhi,
+    VuKhiTayTrai,
     Ao,
     Mu,
     Quan,
@@ -19,6 +20,8 @@ public class EquipmentClass : ItemClass
     [Header("Equipment")]
 
     public ItemType itemType;
+    public Jobs itemJob;
+    public int code_number;
     public int physicsDamage;
     public int magicDamage;
     public int physicsDefense;

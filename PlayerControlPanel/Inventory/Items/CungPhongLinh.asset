@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74ed60c9ea5f59a49bdca3bba9c49c38, type: 3}
-  m_Name: GiapThanPhong
+  m_Name: CungPhongLinh
   m_EditorClassIdentifier: 
-  itemName: Giaps than phong
-  itemId: giap1
-  itemIcon: {fileID: 21300000, guid: 28b103e16acf21b45afc90eb7afb7e42, type: 3}
-  itemType: 2
-  itemJob: 4
+  itemName: Cung Phong Linh
+  itemId: cung1
+  itemIcon: {fileID: 21300000, guid: 2221c3351c58d4e4b913cce730bdb107, type: 3}
+  itemType: 0
+  itemJob: 1
   code_number: 1
-  physicsDamage: 0
-  magicDamage: 0
+  physicsDamage: 30
+  magicDamage: 20
   physicsDefense: 30
-  magicDefense: 30
+  magicDefense: 10
   hp: 50
   mana: 30

@@ -6,6 +6,7 @@ public class PlayerDamage : MonoBehaviour
 {
     // Start is called before the first frame update
     public int damge;
+    public bool destroyWhenCollide=false;
     public GameObject collidePrefab;
 
     void OnTriggerEnter2D(Collider2D other)
@@ -20,6 +21,10 @@ public class PlayerDamage : MonoBehaviour
                 {
                     GameObject newPrefab = Instantiate(collidePrefab, enemyCharacter.transform.position, Quaternion.identity);
                     Destroy(newPrefab,0.5f);
+                }
+                if (destroyWhenCollide)
+                {
+                    Destroy(gameObject);
                 }
             }
         }

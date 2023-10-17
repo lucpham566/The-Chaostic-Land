@@ -15,8 +15,18 @@ public class UIItemSkill : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameObject cooldownUI = transform.Find("Cooldown").gameObject;
-        cooldownUI.GetComponent<Image>().fillAmount = skillControl.cooldownTimer/skillControl.skillClass.cooldownTime;
+        if (skillControl)
+        {
+            if (skillControl.icon)
+            {
+                Debug.Log(skillControl.icon + "skillControl.icon");
+            }
+            GameObject cooldownUI = transform.Find("Cooldown").gameObject;
+            GameObject icon = transform.Find("Image").gameObject;
+            cooldownUI.GetComponent<Image>().fillAmount = skillControl.cooldownTimer / skillControl.skillClass.cooldownTime;
+            icon.GetComponent<Image>().sprite = skillControl.icon;
+        }
+       
     }
 
 

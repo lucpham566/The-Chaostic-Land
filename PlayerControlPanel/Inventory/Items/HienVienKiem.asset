@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: HienVienKiem
   m_EditorClassIdentifier: 
   itemName: "Hi\xEAn Vi\xEAn Ki\u1EBFm"
+  itemId: kiem2
   itemIcon: {fileID: 21300000, guid: 789e518168d493d4396ec984b1b5bcb3, type: 3}
   itemType: 0
+  itemJob: 0
+  code_number: 2
   physicsDamage: 30
   magicDamage: 20
   physicsDefense: 30
