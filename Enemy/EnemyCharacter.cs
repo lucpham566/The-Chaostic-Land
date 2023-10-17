@@ -4,11 +4,35 @@ using UnityEngine;
 
 public class EnemyCharacter : MonoBehaviour, ITargetable
 {
+    public string name = "enemy";
     public int MaxHealth;
     public int Health;
     public int Armor;
+    public int ArmorMagic;
     public int Damage;
-    public string name="enemy";
+    public int staminaMax; // choáng
+    public int burnStaminaMax; //bỏng
+    public int freezeStaminaMax; //tê cứng
+    public int poisonStaminaMax; //trúng độc
+    public int diseasesStaminaMax; // suy nhược
+
+    public int stamina; // choáng
+    public int burnStamina; //bỏng
+    public int freezeStamina; //tê cứng
+    public int poisonStamina; //trúng độc
+    public int diseasesStamina; // suy nhược
+
+    public bool isStune;
+    public bool isBurn;
+    public bool isFreeze;
+    public bool isPoison;
+    public bool isDiseases;
+
+    public float staminaRecoveryRate = 10.0f;
+    public bool isRecoveringStamina = false;
+
+
+    public float takeDameTimer = 0;
 
     public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
     public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
@@ -43,8 +67,10 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
         animator.runtimeAnimatorController = enemyClass.animationController;
         MaxHealth = enemyClass.maxHP;
         Health = enemyClass.maxHP;
-        Armor = enemyClass.armor; 
+        Armor = enemyClass.armor;
         Damage = enemyClass.damage;
+
+        staminaRecoveryRate = staminaMax / 100;
 
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -76,9 +102,17 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     private void Update()
     {
         CheckJumpingAndFalling();
+        if (takeDameTimer > 0)
+        {
+            takeDameTimer -= Time.deltaTime;
+            if (stamina < staminaMax)
+            {
+                StartStaminaRecovery();
+            }
+        }
         if (IsMoving())
         {
-            animator.SetBool("Move",true);
+            animator.SetBool("Move", true);
             setFaceTarget();
             isMove = true;
         }
@@ -129,7 +163,7 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     protected virtual void Die()
     {
         isDeath = true;
-        animator.SetBool("Die",true);
+        animator.SetBool("Die", true);
         Destroy(gameObject, delayInSecondsDie);
         DropItem();
     }
@@ -234,6 +268,52 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     public void setFaceLeft()
     {
         spriteRenderer.flipX = true;
+    }
+
+    // Hồi phục thể lực 
+    private void StartStaminaRecovery()
+    {
+        isRecoveringStamina = true;
+        StartCoroutine(RecoverStaminaOverTime());
+    }
+
+    private IEnumerator RecoverStaminaOverTime()
+    {
+        while (stamina < staminaMax)
+        {
+            stamina += staminaRecoveryRate * Time.deltaTime;
+            yield return null;
+        }
+
+        stamina = staminaMax;
+        isRecoveringStamina = false;
+    }
+
+    // các trạng thái hiệu ứng
+    public void Stune(float stuneTime)
+    {
+        isStune = true;
+        StartCoroutine(RecoverStaminaOverTime(stuneTime));
+    }
+
+    private IEnumerator StuneOverTime(float stuneTime)
+    {
+        yield return new WaitForSeconds(stuneTime);
+
+        isStune = false;
+    }
+
+    public void ReducedArmor(float time, int amountRate)
+    {
+        StartCoroutine(ReducedArmorOverTime(time, amountRate));
+    }
+
+    private IEnumerator ReducedArmorOverTime(float time, int amountRate)
+    {
+        int ArmorGiam = Armor/100*amountRate;
+        Armor -= ArmorGiam;
+        yield return new WaitForSeconds(time);
+        Armor += ArmorGiam;
     }
 
     private void DropItem()

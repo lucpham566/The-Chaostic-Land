@@ -35,6 +35,11 @@ public class EnemyController : MonoBehaviour
 
     protected void Update()
     {
+        if (enemyCharactor.isStune)
+        {
+            return;
+        }
+
         timeSinceLastShot += Time.deltaTime;
         timeSinceLastIdle -= Time.deltaTime;
 
