@@ -13,6 +13,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float staminaRecoveryRate = 10f;
 
     public GameObject heathBar;
+    public TextMeshProUGUI heathBarValue;
     public GameObject heathBarMini;
     private PlayerCharacter playerCharacter;
 
@@ -36,6 +37,7 @@ public class PlayerStats : MonoBehaviour
         if (heathBar)
         {
             heathBar.GetComponent<Image>().fillAmount = currentHeath / maxHeath;
+            heathBarValue.GetComponent<TextMeshProUGUI>().text = currentHeath + "/" + maxHeath;
             heathBarMini.GetComponent<Image>().fillAmount = currentHeath / maxHeath;
         }
 

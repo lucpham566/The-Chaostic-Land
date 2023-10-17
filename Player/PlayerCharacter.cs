@@ -14,6 +14,8 @@ public class PlayerCharacter : MonoBehaviour
     public int initArmor;
     public int initDamage;
 
+    public int baseArmor;
+
     public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
     public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
     public float wallDistanceThreshold; // Khoảng cách tối thiểu giữa nhân vật và tường
@@ -32,6 +34,7 @@ public class PlayerCharacter : MonoBehaviour
     public bool isGrounded;
     public bool isSliding;
     public bool isAttacking;
+    public bool isDefend;
     public bool moveEnable=true;
 
     public bool canDash = true;
@@ -45,6 +48,9 @@ public class PlayerCharacter : MonoBehaviour
     public float groundCheckRadius = 0.1f;
     public float maxFallHeight = 0.01f; // Mức cao tối đa trước khi đặt lại vị trí
 
+    // animation
+    public CharacterAnimator characterAnimator;
+
     private Rigidbody2D rb2d;
     private Animator animator;
     private Transform enemyTransform;
@@ -52,6 +58,8 @@ public class PlayerCharacter : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public PlayerAudio playerAudio;
     public EquipmentManager equipmentManager;
+    public GearEquipper gearEquipper;
+    public Transform transformCharacterGFX;
     [SerializeField] private TrailRenderer tr; // hiệu ứng lướt
 
     public PlayerCharacter(int health, int armor, int damage)
@@ -77,8 +85,10 @@ public class PlayerCharacter : MonoBehaviour
         enemyTransform = transform;
         tr=GetComponent<TrailRenderer>();
         equipmentManager=GetComponent<EquipmentManager>();
+        characterAnimator = GetComponent<CharacterAnimator>();
+        gearEquipper = GetComponent<GearEquipper>();
+        transformCharacterGFX = transform.Find("CharacterGFX");
 
-       
         AddEquipmentStats();
     }
 
@@ -118,6 +128,7 @@ public class PlayerCharacter : MonoBehaviour
     {
         CheckJumpingAndFalling();
         checkMoveEnable();
+        CheckDefend();
         if (IsMoving())
         {
             animator.SetBool("Move",true);
@@ -136,7 +147,31 @@ public class PlayerCharacter : MonoBehaviour
     {
         playerAudio.PlayClipOneShot(playerAudio.swordSlashSound);
         animator.SetTrigger("Attack");
+        characterAnimator.ChangeAnimation("Attack1");
     }
+
+    public void CheckDefend()
+    {
+        if (isDefend)
+        {
+            Armor = baseArmor*3;
+        }
+        else
+        {
+            Armor = baseArmor;
+        }
+    }
+    public void Defend()
+    {
+        isDefend = true;
+        characterAnimator.ChangeAnimation("Defence");
+    }
+
+    public void DefendCancel()
+    {
+        isDefend = false;
+    }
+    
 
     public void Jump()
     {
@@ -172,7 +207,7 @@ public class PlayerCharacter : MonoBehaviour
 
     protected void checkMoveEnable()
     {
-        if (isAttacking)
+        if (isAttacking || isDefend)
         {
             moveEnable = false;
         }
@@ -272,20 +307,33 @@ public class PlayerCharacter : MonoBehaviour
     private void setFaceTarget()
     {
         // Kiểm tra hướng vận tốc và lật lại hình ảnh
+
         if (rb2d.velocity.x > 0) // Nếu vận tốc dương, đang di chuyển sang phải
         {
-            spriteRenderer.flipX = false;
+            transformCharacterGFX.localScale = new Vector3(Mathf.Abs(transformCharacterGFX.localScale.x), transformCharacterGFX.localScale.y, transformCharacterGFX.localScale.z);
         }
         else if (rb2d.velocity.x < 0) // Nếu vận tốc âm, đang di chuyển sang trái
         {
-            spriteRenderer.flipX = true;
+            transformCharacterGFX.localScale = new Vector3(-Mathf.Abs(transformCharacterGFX.localScale.x), transformCharacterGFX.localScale.y, transformCharacterGFX.localScale.z);
+        }
+    }
 
+    public void setFaceToTarget(Vector3 targetPosition)
+    {
+        // Kiểm tra hướng vận tốc và lật lại hình ảnh
+        if (targetPosition.x > transform.position.x) // Nếu vận tốc dương, đang di chuyển sang phải
+        {
+            transformCharacterGFX.localScale = new Vector3(Mathf.Abs(transformCharacterGFX.localScale.x), transformCharacterGFX.localScale.y, transformCharacterGFX.localScale.z);
+        }
+        else // Nếu vận tốc âm, đang di chuyển sang trái
+        {
+            transformCharacterGFX.localScale = new Vector3(-Mathf.Abs(transformCharacterGFX.localScale.x), transformCharacterGFX.localScale.y, transformCharacterGFX.localScale.z);
         }
     }
 
     public bool isFaceToRight()
     {
-        if (!spriteRenderer.flipX) // Nếu vận tốc dương, đang di chuyển sang phải
+        if (transformCharacterGFX.localScale.x > 0) // Nếu vận tốc dương, đang di chuyển sang phải
         {
             return true;
         }
@@ -300,14 +348,7 @@ public class PlayerCharacter : MonoBehaviour
         animator.SetBool("Dashing", true);
         float originalGravity = rb2d.gravityScale;
         rb2d.gravityScale = 0f;
-        if (isFaceToRight())
-        {
-            rb2d.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
-        }
-        else
-        {
-            rb2d.velocity = new Vector2(-transform.localScale.x * dashingPower, 0f);
-        }
+        rb2d.velocity = new Vector2(dashingPower, 0f);
 
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
@@ -332,8 +373,9 @@ public class PlayerCharacter : MonoBehaviour
             DamageBonus += item.physicsDamage;
         }
 
-        Health = initMaxHealth+ HealthBonus;
+        MaxHealth = initMaxHealth+ HealthBonus;
         Armor = initArmor + ArmorBonus;
+        baseArmor = initArmor + ArmorBonus;
         Damage = initDamage + DamageBonus;
     }
 }

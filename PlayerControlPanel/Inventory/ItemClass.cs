@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class ItemClass: ScriptableObject
 {
     public string itemName;
+    public string itemId;
     public Sprite itemIcon;
 
     public abstract ItemClass GetItem();

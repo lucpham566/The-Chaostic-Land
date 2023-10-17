@@ -11,6 +11,9 @@ public class SkillController : MonoBehaviour
     public SkillControl selectedSkill;     // Kỹ năng đang được chọn
     private int currentSkillIndex;   // Chỉ số của kỹ năng hiện tại
 
+    public GameObject skillSlotContainer;
+    public GameObject[] skillSlots;
+
 
 
 
@@ -49,6 +52,20 @@ public class SkillController : MonoBehaviour
     }
     void Start()
     {
+       
+        skillSlots = new GameObject[skillSlotContainer.transform.childCount];
+
+        for (int i = 0; i < skillSlotContainer.transform.childCount; i++)
+        {
+            skillSlots[i] = skillSlotContainer.transform.GetChild(i).gameObject;
+        }
+
+        for (int i = 0; i < skills.Count; i++)
+        {
+            UIItemSkill uiItemSkill = skillSlots[i].GetComponent<UIItemSkill>();
+            uiItemSkill.skillControl = skills[i];
+        }
+
         currentSkillIndex = 0; // Bắt đầu với kỹ năng đầu tiên
         SelectSkill(currentSkillIndex);
     }
@@ -57,7 +74,7 @@ public class SkillController : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             // Thực hiện các hành động khi người chơi nhấn nút "I" ở đây
             Debug.Log("Nút 'I' đã được nhấn.");

@@ -7,8 +7,9 @@ using UnityEngine.UI;
 [System.Serializable]
 public class SlotButton: MonoBehaviour
 {
-    public SlotClass slotClass;
+    public ItemClass itemClass;
     public InventoryManager inventoryManager;
+    public EquipmentManager equipmentManager;
 
     private void Update()
     {
@@ -19,9 +20,9 @@ public class SlotButton: MonoBehaviour
         resetActiveSlot();
         gameObject.GetComponent<Image>().color = new Color32(172, 255, 174, 255);
 
-        if (slotClass != null)
+        if (itemClass != null)
         {   
-            inventoryManager.itemSelected = slotClass.GetItem();
+            inventoryManager.itemSelected = itemClass.GetItem();
         }
         else
         {
@@ -37,5 +38,12 @@ public class SlotButton: MonoBehaviour
         {
             slot.GetComponent<Image>().color = new Color(255, 255, 255);
         }
+
+        Debug.Log(equipmentManager.slots + "equipmentManager.slots");
+        foreach (GameObject slot in equipmentManager.slots)
+        {
+            slot.GetComponent<Image>().color = new Color(255, 255, 255);
+        }
     }
+
 }

@@ -17,17 +17,21 @@ public class ComboAttack : MonoBehaviour
     private PlayerCharacter playerCharacter;
     public GameObject attackPrefab; // vung tan cong duocc tao ra
     public List<GameObject> attackPrefabs; // vung tan cong duocc tao ra
-
+    public CharacterAnimator characterAnimator;
+    public PlayerController playerController;
     public float attackDuration = 0.5f; // thoi gian ton tai vung tan cong
+    public float attackDeley = 0.5f; // thoi gian hồi chiêu
 
     void Start()
     {
         animator = GetComponent<Animator>();
         playerCharacter = GetComponent<PlayerCharacter>();
+        characterAnimator = GetComponent<CharacterAnimator>();
+        playerController = GetComponent<PlayerController>();
         combo = 1;
         comboTiming = 0.5f;
         comboTempo = comboTiming;
-        comboNumber = 3;
+        comboNumber = 2;
     }
 
     // Update is called once per frame
@@ -43,6 +47,7 @@ public class ComboAttack : MonoBehaviour
             comboTempo -= Time.deltaTime;
             if (Input.GetMouseButtonDown(0))
             {
+                playerController.Attack();
                 StartCoroutine(AttackCombo());
             }
         }
@@ -60,6 +65,7 @@ public class ComboAttack : MonoBehaviour
             playerCharacter.isAttacking = true;
             combo = 1;
             animator.SetTrigger("Attack" + combo);
+            characterAnimator.ChangeAnimation("Attack" + combo);
             comboTempo = comboTiming;
             yield return new WaitForSeconds(0.2f);
             GenAttackZone();
@@ -77,12 +83,13 @@ public class ComboAttack : MonoBehaviour
             }
 
             animator.SetTrigger("Attack" + combo);
+            characterAnimator.ChangeAnimation("Attack" + combo);
             comboTempo = comboTiming;
             yield return new WaitForSeconds(0.2f);
             GenAttackZone();
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(attackDeley);
         animator.SetBool("Attacking", false);
         playerCharacter.isAttacking = false;
     }
