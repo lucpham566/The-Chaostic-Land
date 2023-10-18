@@ -6,23 +6,18 @@ using UnityEngine;
 
 public class PhotonPlayerController : NetworkBehaviour
 {
-    private PlayerCharacter playerCharacter;
+    private PhotonPlayerCharacter playerCharacter;
     public PlayerRangeTarget playerRangeTarget;
     public PlayerRangeInteract playerRangeInteract;
     public InventoryManager inventoryManager;
     public CharacterAnimator characterAnimator;
 
     public GameObject targetIcon;
-    public float moveSpeed = 5f;
-    public float jumpForce = 10f;
-    public float slideSpeed = 10f;
-    public Transform groundCheck;
-    public LayerMask groundLayer;
+
     public bool controlEnable = true;
 
     public int combo;
     public int comboNumber;
-    public bool attacking;
 
     public float comboTiming;
     public float comboTempo;
@@ -217,7 +212,6 @@ public class PhotonPlayerController : NetworkBehaviour
 
     private IEnumerator AttackCombo()
     {
-        attacking = true;
         checkJobAttackProperties();
 
         if (comboTempo < 0)
