@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
                 playerRangeTarget.SwipeTarget();
             }
 
-            // Đổi mục tiêu
+            // Tương tác
             if (Input.GetKeyDown(KeyCode.E))
             {
                 Interact();

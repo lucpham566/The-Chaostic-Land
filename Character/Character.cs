@@ -449,7 +449,7 @@ public class Character : MonoBehaviour
             Mana = MaxMana;
         }
     }
-
+    
     private IEnumerator StuneOverTime(float stuneTime)
     {
         isStune = true;

@@ -6,6 +6,13 @@ using UnityEngine;
 public class PhotonPlayer : NetworkBehaviour, IPlayerLeft
 {
     public static PhotonPlayer local { get; set; }
+    public GameObject localGameObject;
+
+    private void Awake()
+    {
+        localGameObject = gameObject
+    }
+
     public override void Spawned()
     {
         if (Object.HasInputAuthority)
