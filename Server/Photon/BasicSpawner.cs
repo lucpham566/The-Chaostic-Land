@@ -39,7 +39,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (PhotonPlayer.local)
         {
-            Debug.Log("VÀO ĐÂY");
             PhotonPlayerInput photonPlayerInput = PhotonPlayer.local.GetComponent<PhotonPlayerInput>();
             if (photonPlayerInput !=null)
             {

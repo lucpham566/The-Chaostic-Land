@@ -131,7 +131,6 @@ public class Character : MonoBehaviour
         gearEquipper = GetComponent<GearEquipper>();
         transformCharacterGFX = transform.Find("CharacterGFX");
 
-        AddEquipmentStats();
     }
 
     private void FixedUpdate()
@@ -420,7 +419,6 @@ public class Character : MonoBehaviour
     {
         while (stamina < staminaMax)
         {
-            stamina += staminaRecoveryRate * Time.deltaTime;
             yield return null;
         }
 

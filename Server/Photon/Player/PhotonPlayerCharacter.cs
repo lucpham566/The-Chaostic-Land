@@ -1,52 +1,53 @@
-﻿using System;
+﻿using Fusion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PhotonPlayerCharacter : NetworkBehaviour
 {
-    [Networked] public int MaxHealth;
-    [Networked] public int Health;
-    [Networked] public int Armor;
-    [Networked] public int Damage;
+    public int MaxHealth;
+    public int Health;
+    public int Armor;
+    public int Damage;
 
-    [Networked] public int initMaxHealth;
-    [Networked] public int initArmor;
-    [Networked] public int initDamage;
+    public int initMaxHealth;
+    public int initArmor;
+    public int initDamage;
 
-    [Networked] public int baseArmor;
+    public int baseArmor;
 
-    [Networked] public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
-    [Networked] public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
-    [Networked] public float wallDistanceThreshold; // Khoảng cách tối thiểu giữa nhân vật và tường
-    [Networked] public float jumpForce = 5;
-    [Networked] public float slideForce = 5;
-    [Networked] public float moveX ; // Tốc độ di chuyển của quái
+    public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
+    public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
+    public float wallDistanceThreshold; // Khoảng cách tối thiểu giữa nhân vật và tường
+    public float jumpForce = 5;
+    public float slideForce = 5;
+    public float moveX ; // Tốc độ di chuyển của quái
 
 
     // các trạng thái
-    [Networked] public bool dameable=true;
+    public bool dameable=true;
 
-    [Networked] public bool isMove;
+    public bool isMove;
 
-    [Networked] public bool isFalling;
-    [Networked] public bool isJumping;
-    [Networked] public bool isGrounded;
-    [Networked] public bool isSliding;
-    [Networked] public bool isAttacking;
-    [Networked] public bool isDefend;
-    [Networked] public bool moveEnable=true;
+    public bool isFalling;
+    public bool isJumping;
+    public bool isGrounded;
+    public bool isSliding;
+    public bool isAttacking;
+    public bool isDefend;
+    public bool moveEnable=true;
 
-    [Networked] public bool canDash = true;
-    [Networked] public bool isDashing = false;
-    [Networked] public float dashingPower = 24f;
-    [Networked] public float dashingTime = 0.2f;
-    [Networked] public float dashingCooldown = 1f;
+    public bool canDash = true;
+    public bool isDashing = false;
+    public float dashingPower = 24f;
+    public float dashingTime = 0.2f;
+    public float dashingCooldown = 1f;
 
-    [Networked] public float groundCheckDistance = 1f; // Khoảng cách kiểm tra từ chân nhân vật xuống mặt đất
-    [Networked] public LayerMask groundLayer; // Layer của mặt đất
-    [Networked] public float groundCheckRadius = 0.1f;
-    [Networked] public float maxFallHeight = 0.01f; // Mức cao tối đa trước khi đặt lại vị trí
+    public float groundCheckDistance = 1f; // Khoảng cách kiểm tra từ chân nhân vật xuống mặt đất
+    public LayerMask groundLayer; // Layer của mặt đất
+    public float groundCheckRadius = 0.1f;
+    public float maxFallHeight = 0.01f; // Mức cao tối đa trước khi đặt lại vị trí
 
     // animation
     public CharacterAnimator characterAnimator;
@@ -62,12 +63,6 @@ public class PhotonPlayerCharacter : NetworkBehaviour
     public Transform transformCharacterGFX;
     [SerializeField] private TrailRenderer tr; // hiệu ứng lướt
 
-    public PlayerCharacter(int health, int armor, int damage)
-    {
-        Health = health;
-        Armor = armor;
-        Damage = damage;
-    }
 
     private void Awake()
     {

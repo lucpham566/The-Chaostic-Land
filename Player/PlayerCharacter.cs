@@ -21,11 +21,11 @@ public class PlayerCharacter : MonoBehaviour
     public float wallDistanceThreshold; // Khoảng cách tối thiểu giữa nhân vật và tường
     public float jumpForce = 5;
     public float slideForce = 5;
-    public float moveX ; // Tốc độ di chuyển của quái
+    public float moveX; // Tốc độ di chuyển của quái
 
 
     // các trạng thái
-    public bool dameable=true;
+    public bool dameable = true;
 
     public bool isMove;
 
@@ -35,7 +35,7 @@ public class PlayerCharacter : MonoBehaviour
     public bool isSliding;
     public bool isAttacking;
     public bool isDefend;
-    public bool moveEnable=true;
+    public bool moveEnable = true;
 
     public bool canDash = true;
     public bool isDashing = false;
@@ -83,8 +83,8 @@ public class PlayerCharacter : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerAudio = GetComponent<PlayerAudio>();
         enemyTransform = transform;
-        tr=GetComponent<TrailRenderer>();
-        equipmentManager=GetComponent<EquipmentManager>();
+        tr = GetComponent<TrailRenderer>();
+        equipmentManager = GetComponent<EquipmentManager>();
         characterAnimator = GetComponent<CharacterAnimator>();
         gearEquipper = GetComponent<GearEquipper>();
         transformCharacterGFX = transform.Find("CharacterGFX");
@@ -131,9 +131,9 @@ public class PlayerCharacter : MonoBehaviour
         CheckDefend();
         if (IsMoving())
         {
-            animator.SetBool("Move",true);
+            animator.SetBool("Move", true);
             setFaceTarget();
-            isMove=true;
+            isMove = true;
         }
         else
         {
@@ -154,7 +154,7 @@ public class PlayerCharacter : MonoBehaviour
     {
         if (isDefend)
         {
-            Armor = baseArmor*3;
+            Armor = baseArmor * 3;
         }
         else
         {
@@ -171,12 +171,13 @@ public class PlayerCharacter : MonoBehaviour
     {
         isDefend = false;
     }
-    
+
 
     public void Jump()
     {
         if (isGrounded)
         {
+            Debug.Log("vào jump nè");
             playerAudio.PlayClipOneShot(playerAudio.jumpSound);
             //rb2d.velocity = new Vector2(rb2d.velocity.x, jumpForce);
             rb2d.velocity = new Vector2(rb2d.velocity.x, 0f); // Đặt tốc độ y về 0 để tránh nhảy nhanh hơn khi đã ở trong không trung.
@@ -348,7 +349,16 @@ public class PlayerCharacter : MonoBehaviour
         animator.SetBool("Dashing", true);
         float originalGravity = rb2d.gravityScale;
         rb2d.gravityScale = 0f;
-        rb2d.velocity = new Vector2(dashingPower, 0f);
+
+        if (isFaceToRight())
+        {
+            rb2d.velocity = new Vector2(dashingPower, 0f);
+
+        }
+        else
+        {
+            rb2d.velocity = new Vector2(-dashingPower, 0f);
+        }
 
         tr.emitting = true;
         yield return new WaitForSeconds(dashingTime);
@@ -373,7 +383,7 @@ public class PlayerCharacter : MonoBehaviour
             DamageBonus += item.physicsDamage;
         }
 
-        MaxHealth = initMaxHealth+ HealthBonus;
+        MaxHealth = initMaxHealth + HealthBonus;
         Armor = initArmor + ArmorBonus;
         baseArmor = initArmor + ArmorBonus;
         Damage = initDamage + DamageBonus;

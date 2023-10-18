@@ -1,4 +1,5 @@
-﻿using Spine;
+﻿using Fusion;
+using Spine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 public class PhotonPlayerController : NetworkBehaviour
 {
-    private PhotonPlayerCharacter playerCharacter;
+    private PlayerCharacter playerCharacter;
     public PlayerRangeTarget playerRangeTarget;
     public PlayerRangeInteract playerRangeInteract;
     public InventoryManager inventoryManager;
@@ -44,12 +45,18 @@ public class PhotonPlayerController : NetworkBehaviour
         comboNumber = 2;
     }
 
-    private void FixedUpdateNetwork()
+    public override void FixedUpdateNetwork()
     {
         if (controlEnable)
         {
             if (GetInput(out NetworkInputData data))
             {
+                if (!playerCharacter.isDashing)
+                {
+                    // Di chuyển trái phải
+                    playerCharacter.Move(data.moveInput);
+                }
+
                 //Combo();
                 if (!playerCharacter.isAttacking)
                 {
@@ -58,31 +65,24 @@ public class PhotonPlayerController : NetworkBehaviour
                     {
                         Attack();
                         StartCoroutine(AttackCombo());
+                        //data.inputAttack = false;
                     }
                 }
                 // Kiểm tra xem có đang target hay không
-                if (playerRangeTarget.currentTarget != null)
-                {
-                    targetIcon.SetActive(true);
-                    Collider2D objectCollider = playerRangeTarget.currentTarget.GetComponent<Collider2D>();
-                    Transform objectTransform = playerRangeTarget.currentTarget.GetComponent<Transform>();
-                    float objectHeight = objectCollider.bounds.size.y;
-                    targetIcon.transform.position = new Vector3(objectTransform.position.x, objectTransform.position.y + objectHeight / 2 + 0.5f, objectTransform.position.z);
-                }
-                else
-                {
-                    targetIcon.SetActive(false);
-                }
+                //if (playerRangeTarget.currentTarget != null && targetIcon)
+                //{
+                //    targetIcon.SetActive(true);
+                //    Collider2D objectCollider = playerRangeTarget.currentTarget.GetComponent<Collider2D>();
+                //    Transform objectTransform = playerRangeTarget.currentTarget.GetComponent<Transform>();
+                //    float objectHeight = objectCollider.bounds.size.y;
+                //    targetIcon.transform.position = new Vector3(objectTransform.position.x, objectTransform.position.y + objectHeight / 2 + 0.5f, objectTransform.position.z);
+                //}
+                //else
+                //{
+                //    targetIcon.SetActive(false);
+                //}
 
                 // Kiểm tra xem nhân vật có đứng trên mặt đất hay không
-
-                if (!playerCharacter.isDashing)
-                {
-                    // Di chuyển trái phải
-
-                    playerCharacter.Move(data.moveInput);
-
-                }
 
                 // Nhảy
                 if (data.inputJump)
@@ -94,16 +94,10 @@ public class PhotonPlayerController : NetworkBehaviour
                     }
                 }
 
-                // Tấn công
-                if (data.inputAttack)
-                {
-                    Attack();
-                }
 
                 // Đổi mục tiêu
                 if (data.inputDefence)
                 {
-                    Debug.Log("nhấn chuốt phải nè đm");
                     playerCharacter.Defend();
                 }
 
@@ -130,13 +124,6 @@ public class PhotonPlayerController : NetworkBehaviour
                     Interact();
                 }
             }
-            else
-            {
-                directionInput = Vector2.zero;
-                Debug.Log("Không ghi nhận " + directionInput);
-            }
-
-
         }
     }
 
@@ -213,6 +200,7 @@ public class PhotonPlayerController : NetworkBehaviour
     private IEnumerator AttackCombo()
     {
         checkJobAttackProperties();
+        Debug.Log("batdau attack TocDoRaDon" + TocDoRaDon);
 
         if (comboTempo < 0)
         {
@@ -241,7 +229,7 @@ public class PhotonPlayerController : NetworkBehaviour
             yield return new WaitForSeconds(TocDoRaDon);
             GenAttackByJob();
         }
-
+        Debug.Log("attack xong nè attackDeley"+ attackDeley);
         yield return new WaitForSeconds(attackDeley);
         playerCharacter.isAttacking = false;
     }

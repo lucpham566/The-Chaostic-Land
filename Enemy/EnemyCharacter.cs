@@ -281,7 +281,6 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     {
         while (stamina < staminaMax)
         {
-            stamina += staminaRecoveryRate * Time.deltaTime;
             yield return null;
         }
 
@@ -293,7 +292,6 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     public void Stune(float stuneTime)
     {
         isStune = true;
-        StartCoroutine(RecoverStaminaOverTime(stuneTime));
     }
 
     private IEnumerator StuneOverTime(float stuneTime)

@@ -10,7 +10,7 @@ public class PhotonPlayer : NetworkBehaviour, IPlayerLeft
 
     private void Awake()
     {
-        localGameObject = gameObject
+        localGameObject = gameObject;
     }
 
     public override void Spawned()

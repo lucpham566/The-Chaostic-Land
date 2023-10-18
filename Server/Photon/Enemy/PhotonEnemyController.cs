@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PhotonEnemyController : NetworkBehaviour
 {
     private Vector3 targetPosition; // Vị trí mục tiêu để quái vật di chuyển đến
-    protected EnemyCharacter enemyCharactor;
+    protected PhotonEnemyCharacter enemyCharactor;
     public GameObject playerTarget;
 
     public GameObject bulletPrefab; //Prefab cho viên đạn
@@ -26,7 +27,7 @@ public class PhotonEnemyController : NetworkBehaviour
 
     private void Start()
     {
-        enemyCharactor = GetComponent<EnemyCharacter>();
+        enemyCharactor = GetComponent<PhotonEnemyCharacter>();
         rb = GetComponent<Rigidbody2D>();
         // Khởi tạo vị trí mục tiêu ban đầu
         checkMoveRandom = false;
@@ -92,7 +93,7 @@ public class PhotonEnemyController : NetworkBehaviour
     protected void FireBullet()
     {
         // Tạo một viên đạn từ prefab
-        GameObject bullet = Runner.Spawn(bulletPrefab, transform.position, Quaternion.identity);
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
         // Tính toán hướng từ viên đạn đến mục tiêu
         Vector3 direction = (playerTarget.transform.position - transform.position).normalized;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyCharacter : MonoBehaviour, ITargetable, Character
+public class EnemyCharacterNew : MonoBehaviour, ITargetable
 {
     public string name = "enemy";
     public int MaxHealth;
@@ -286,7 +286,6 @@ public class EnemyCharacter : MonoBehaviour, ITargetable, Character
     {
         while (stamina < staminaMax)
         {
-            stamina += staminaRecoveryRate * Time.deltaTime;
             yield return null;
         }
 
@@ -298,7 +297,6 @@ public class EnemyCharacter : MonoBehaviour, ITargetable, Character
     public void Stune(float stuneTime)
     {
         isStune = true;
-        StartCoroutine(RecoverStaminaOverTime(stuneTime));
     }
 
     private IEnumerator StuneOverTime(float stuneTime)

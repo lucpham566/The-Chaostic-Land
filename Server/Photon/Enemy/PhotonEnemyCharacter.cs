@@ -1,54 +1,55 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PhotonEnemyCharacter : NetworkBehaviour, ITargetable
 {
-    [Networked] public string name = "enemy";
-    [Networked] public int MaxHealth;
-    [Networked] public int Health;
-    [Networked] public int Armor;
-    [Networked] public int ArmorMagic;
-    [Networked] public int Damage;
-    [Networked] public int staminaMax; // choáng
-    [Networked] public int burnStaminaMax; //bỏng
-    [Networked] public int freezeStaminaMax; //tê cứng
-    [Networked] public int poisonStaminaMax; //trúng độc
-    [Networked] public int diseasesStaminaMax; // suy nhược
+    public string name = "enemy";
+    [Networked] public int MaxHealth{get;set;}
+    [Networked] public int Health{get;set;}
+    [Networked] public int Armor{get;set;}
+    [Networked] public int ArmorMagic{get;set;}
+    [Networked] public int Damage{get;set;}
+    [Networked] public int staminaMax{get;set;} // choáng
+    [Networked] public int burnStaminaMax{get;set;} //bỏng
+    [Networked] public int freezeStaminaMax{get;set;} //tê cứng
+    [Networked] public int poisonStaminaMax{get;set;} //trúng độc
+    [Networked] public int diseasesStaminaMax{get;set;} // suy nhược
 
-    [Networked] public int stamina; // choáng
-    [Networked] public int burnStamina; //bỏng
-    [Networked] public int freezeStamina; //tê cứng
-    [Networked] public int poisonStamina; //trúng độc
-    [Networked] public int diseasesStamina; // suy nhược
+    public int stamina; // choáng
+    public int burnStamina; //bỏng
+    public int freezeStamina; //tê cứng
+    public int poisonStamina; //trúng độc
+    public int diseasesStamina; // suy nhược
 
-    [Networked] public bool isStune;
-    [Networked] public bool isBurn;
-    [Networked] public bool isFreeze;
-    [Networked] public bool isPoison;
-    [Networked] public bool isDiseases;
+    public bool isStune;
+    public bool isBurn;
+    public bool isFreeze;
+    public bool isPoison;
+    public bool isDiseases;
 
-    [Networked] public float staminaRecoveryRate = 10.0f;
-    [Networked] public bool isRecoveringStamina = false;
+    public float staminaRecoveryRate = 10.0f;
+    public bool isRecoveringStamina = false;
 
 
-    [Networked] public float takeDameTimer = 0;
+    public float takeDameTimer = 0;
 
-    [Networked] public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
-    [Networked] public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
-    [Networked] public float maxFallHeight = 0.01f; // Mức cao tối đa trước khi đặt lại vị trí
-    [Networked] public float groundCheckDistance = 1f; // Khoảng cách kiểm tra từ chân nhân vật xuống mặt đất
-    [Networked] public float delayInSecondsDie;
-    [Networked] public float jumpForce = 5;
-    [Networked] public float slideForce = 5;
+    public float moveSpeed = 2.0f; // Tốc độ di chuyển của quái
+    public float movementThreshold = 0.1f; // Ngưỡng vận tốc để xem quái vật có đang di chuyển
+    public float maxFallHeight = 0.01f; // Mức cao tối đa trước khi đặt lại vị trí
+    public float groundCheckDistance = 1f; // Khoảng cách kiểm tra từ chân nhân vật xuống mặt đất
+    public float delayInSecondsDie;
+    public float jumpForce = 5;
+    public float slideForce = 5;
 
     // các trạng thái
-    [Networked] public bool isAttack;
-    [Networked] public bool isMove;
-    [Networked] public bool isJumping;
-    [Networked] public bool isFalling;
-    [Networked] public bool isGrounded;
-    [Networked] public bool isDeath;
+    public bool isAttack;
+    public bool isMove;
+    public bool isJumping;
+    public bool isFalling;
+    public bool isGrounded;
+    public bool isDeath;
 
     public Rigidbody2D rb;
     public Animator animator;
@@ -281,7 +282,6 @@ public class PhotonEnemyCharacter : NetworkBehaviour, ITargetable
     {
         while (stamina < staminaMax)
         {
-            stamina += staminaRecoveryRate * Time.deltaTime;
             yield return null;
         }
 
@@ -293,7 +293,6 @@ public class PhotonEnemyCharacter : NetworkBehaviour, ITargetable
     public void Stune(float stuneTime)
     {
         isStune = true;
-        StartCoroutine(RecoverStaminaOverTime(stuneTime));
     }
 
     private IEnumerator StuneOverTime(float stuneTime)

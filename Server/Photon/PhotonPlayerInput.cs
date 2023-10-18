@@ -1,4 +1,4 @@
-using Fusion;
+﻿using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,16 +6,17 @@ using UnityEngine;
 public class PhotonPlayerInput : NetworkBehaviour
 {
     Vector2 inputVector;
-    bool inputJump = false;
-    bool inputDash = false;
-    bool inputAttack = false;
-    bool inputDefence = false;
-    int inputUseSkill = 0;
-    int moveInput = 0;
+    [SerializeField] private bool inputJump = false;
+    [SerializeField] bool inputDash = false;
+    [SerializeField] bool inputAttack = false;
+    [SerializeField] bool inputDefence = false;
+    [SerializeField] bool inputChangeTarget = false;
+    [SerializeField] bool inputInteract = false;
+    [SerializeField] int inputUseSkill = 0;
+    [SerializeField] int moveInput = 0;
     private void Update()
     {
-        inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
+        ResetData();
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             moveInput = 1;
@@ -24,8 +25,8 @@ public class PhotonPlayerInput : NetworkBehaviour
         {
             moveInput = -1;
         }
-
-        if (Input.GetButtonDown("Jump"))
+        
+        if (Input.GetKey(KeyCode.Space))
         {
             inputJump = true;
         }
@@ -34,6 +35,7 @@ public class PhotonPlayerInput : NetworkBehaviour
         {
             inputAttack = true;
         }
+            
         if (Input.GetMouseButtonDown(1))
         {
             inputDefence = true;
@@ -44,16 +46,28 @@ public class PhotonPlayerInput : NetworkBehaviour
         }
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            inputDash = false;
+
+            inputDash = true;
         }
         if (Input.GetKeyDown(KeyCode.X))
         {
-            inputChangeTarget = false;
+            inputChangeTarget = true;
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             inputInteract = true;
         }
+
+    }
+
+    private void ResetData()
+    {
+        moveInput = 0;
+        inputAttack = false;
+        inputJump = false;
+        inputDash = false;
+        inputChangeTarget = false;
+        inputInteract = false;
 
     }
 
