@@ -15,7 +15,7 @@ public class Skill : MonoBehaviour
     private void Start()
     {
         // Truy cập script FireballSkill từ cùng một GameObject
-        skillControl = GetComponent<Control>();
+        skillControl = new LightningSkill();
     }
 
     private void Update()
