@@ -10,6 +10,9 @@ public class LightningSkill : SkillControl
     public float bulletSpeed = 10f;  // Tốc độ viên đạn
     public float bulletLifetime = 5f; // Thời gian tồn tại của viên đạn (5 giây)
 
+    public void Start (){
+        firePoint = PhotonPlayer.local.transform;
+    }
     public override void UseSkill()
     {
         if (!base.isCooldown)

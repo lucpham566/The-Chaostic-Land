@@ -14,7 +14,7 @@ public class UITarget : MonoBehaviour
 
     void Start()
     {
-        playerRangeTarget= GetComponent<PlayerRangeTarget>();
+        playerRangeTarget= PhotonPlayer.local.GetComponent<PlayerRangeTarget>();
     }
 
     // Update is called once per frame

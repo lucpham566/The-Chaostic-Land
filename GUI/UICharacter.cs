@@ -9,13 +9,14 @@ public class UICharacter : MonoBehaviour
     public EquipmentManager equipmentManager;
     void Start()
     {
+        equipmentManager = PhotonPlayer.local.GetComponent<EquipmentManager>();
         RefreshUI();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void setItem(EquipmentClass equipment)
