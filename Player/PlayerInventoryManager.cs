@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class PlayerInventoryManager : MonoBehaviour
 {
-    [SerializeField] private GameObject slotsHolder;
     public ItemClass itemAdd;
     public ItemClass itemRemove;
     public List<SlotClass> items = new List<SlotClass>();
