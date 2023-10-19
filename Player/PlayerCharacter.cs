@@ -57,7 +57,7 @@ public class PlayerCharacter : MonoBehaviour
     public SpawnDecreaseText spawnDecreaseText;
     public SpriteRenderer spriteRenderer;
     public PlayerAudio playerAudio;
-    public EquipmentManager equipmentManager;
+    public PlayerEquipmentManager equipmentManager;
     public GearEquipper gearEquipper;
     public Transform transformCharacterGFX;
     [SerializeField] private TrailRenderer tr; // hiệu ứng lướt
@@ -84,7 +84,7 @@ public class PlayerCharacter : MonoBehaviour
         playerAudio = GetComponent<PlayerAudio>();
         enemyTransform = transform;
         tr = GetComponent<TrailRenderer>();
-        equipmentManager = GetComponent<EquipmentManager>();
+        equipmentManager = GetComponent<PlayerEquipmentManager>();
         characterAnimator = GetComponent<CharacterAnimator>();
         gearEquipper = GetComponent<GearEquipper>();
         transformCharacterGFX = transform.Find("CharacterGFX");

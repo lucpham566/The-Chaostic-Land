@@ -10,7 +10,7 @@ public class MenuController : MonoBehaviour
     public Canvas canvas = null;
     void Start()
     {
-        playerController = PhotonPlayer.local.GetComponent<playerController>();
+        playerController = PhotonPlayer.local.GetComponent<PlayerController>();
         tabListFrefab.SetActive(false);
         canvas = GetComponent<Canvas>();    
     }
