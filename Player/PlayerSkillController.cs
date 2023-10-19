@@ -5,17 +5,24 @@ using UnityEngine.UI;
 
 public class PlayerSkillController : MonoBehaviour
 {
+    public List<SkillClass> skillList;
     public List<SkillControl> skills;       // Danh sách các kỹ năng
     public Image skillIcon;          // Hình ảnh biểu tượng kỹ năng hiện tại (gắn vào UI)
 
     public SkillControl selectedSkill;     // Kỹ năng đang được chọn
     private int currentSkillIndex;   // Chỉ số của kỹ năng hiện tại
 
-
+    public void Start()
+    {
+        foreach (SkillClass skill in skillList)
+        {
+           skills.Add(skill.skillPrefab.GetComponent<SkillControl>())
+        }
+    }
     // Hàm để chọn kỹ năng
     public void SelectSkill(int skillIndex)
     {
-        Debug.Log("nhấn chọn skill "+ skillIndex);
+        Debug.Log("nhấn chọn skill " + skillIndex);
         if (skillIndex >= 0 && skillIndex < skills.Count)
         {
             currentSkillIndex = skillIndex; // Cập nhật chỉ số kỹ năng hiện tại
