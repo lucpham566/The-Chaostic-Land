@@ -12,5 +12,5 @@ public class SkillClass : ScriptableObject
     public int staminaCost;
     public int magicCost;
     public float cooldownTime;
-    public SkillControl skillControl;
+    public GameObject skillPrefab;
 }
