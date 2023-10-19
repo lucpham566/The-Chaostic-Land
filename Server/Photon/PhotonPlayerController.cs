@@ -11,7 +11,9 @@ public class PhotonPlayerController : NetworkBehaviour
     public PlayerRangeTarget playerRangeTarget;
     public PlayerRangeInteract playerRangeInteract;
     public InventoryManager inventoryManager;
-    public CharacterAnimator characterAnimator;
+    public CharacterAnimator characterAnimator;    
+    public PlayerSkillController PlayerSkillController;
+
 
     public GameObject targetIcon;
 
@@ -94,6 +96,12 @@ public class PhotonPlayerController : NetworkBehaviour
                     }
                 }
 
+                // Nhảy
+                if (data.inputUseSkill && data.inputSelectSkill)
+                {
+                    PlayerSkillController.SwitchSkill(data.inputSelectSkill);
+                    PlayerSkillController.UseSelectedSkill();
+                }
 
                 // Đổi mục tiêu
                 if (data.inputDefence)

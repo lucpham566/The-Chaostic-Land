@@ -12,7 +12,9 @@ public class PhotonPlayerInput : NetworkBehaviour
     [SerializeField] bool inputDefence = false;
     [SerializeField] bool inputChangeTarget = false;
     [SerializeField] bool inputInteract = false;
-    [SerializeField] int inputUseSkill = 0;
+    [SerializeField] bool inputUseSkill = false;
+    [SerializeField] int inputSelectSkill = 0;
+
     [SerializeField] int moveInput = 0;
     private void Update()
     {
@@ -25,7 +27,7 @@ public class PhotonPlayerInput : NetworkBehaviour
         {
             moveInput = -1;
         }
-        
+
         if (Input.GetKey(KeyCode.Space))
         {
             inputJump = true;
@@ -35,7 +37,7 @@ public class PhotonPlayerInput : NetworkBehaviour
         {
             inputAttack = true;
         }
-            
+
         if (Input.GetMouseButtonDown(1))
         {
             inputDefence = true;
@@ -58,6 +60,29 @@ public class PhotonPlayerInput : NetworkBehaviour
             inputInteract = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.1))
+        {
+            inputSelectSkill = 1;
+            inputUseSkill = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.2))
+        {
+            inputSelectSkill = 2;
+            inputUseSkill = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.3))
+        {
+            inputSelectSkill = 3;
+            inputUseSkill = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.4))
+        {
+            inputSelectSkill = 4;
+            inputUseSkill = true;
+        }
     }
 
     private void ResetData()
@@ -67,7 +92,9 @@ public class PhotonPlayerInput : NetworkBehaviour
         inputJump = false;
         inputDash = false;
         inputChangeTarget = false;
-        inputInteract = false;
+        inputInteract = false; 
+        inputUseSkill = false;
+
 
     }
 

@@ -29,6 +29,16 @@ public class SkillController : MonoBehaviour
     }
 
     // Hàm để chuyển đổi sang kỹ năng tiếp theo
+    public void SwitchSkill(int skillIndex)
+    {
+        int nextSkillIndex = skillIndex;
+        if (nextSkillIndex >= skills.Count)
+        {
+            nextSkillIndex = 0; // Quay lại kỹ năng đầu tiên nếu không còn kỹ năng tiếp theo
+        }
+        SelectSkill(nextSkillIndex);
+    }
+
     public void SwitchToNextSkill()
     {
         int nextSkillIndex = currentSkillIndex + 1;
