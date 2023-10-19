@@ -15,6 +15,7 @@ public class PlayerSkillController : MonoBehaviour
     // Hàm để chọn kỹ năng
     public void SelectSkill(int skillIndex)
     {
+        Debug.Log("nhấn chọn skill "+ skillIndex);
         if (skillIndex >= 0 && skillIndex < skills.Count)
         {
             currentSkillIndex = skillIndex; // Cập nhật chỉ số kỹ năng hiện tại
@@ -26,7 +27,7 @@ public class PlayerSkillController : MonoBehaviour
     // Hàm để chuyển đổi sang kỹ năng tiếp theo
     public void SwitchSkill(int skillIndex)
     {
-        int nextSkillIndex = skillIndex;
+        int nextSkillIndex = skillIndex - 1;
         if (nextSkillIndex >= skills.Count)
         {
             nextSkillIndex = 0; // Quay lại kỹ năng đầu tiên nếu không còn kỹ năng tiếp theo
@@ -57,7 +58,7 @@ public class PlayerSkillController : MonoBehaviour
     }
     void Start()
     {
-       
+
     }
 
     // Update is called once per frame

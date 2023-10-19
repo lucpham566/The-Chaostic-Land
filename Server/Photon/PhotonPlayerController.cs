@@ -96,9 +96,10 @@ public class PhotonPlayerController : NetworkBehaviour
                     }
                 }
 
-                // Nhảy
-                if (data.inputUseSkill && data.inputSelectSkill)
+
+                if (data.inputUseSkill && data.inputSelectSkill>0)
                 {
+                    Debug.Log("nhấn chọn data.inputSelectSkill " + data.inputSelectSkill);
                     PlayerSkillController.SwitchSkill(data.inputSelectSkill);
                     PlayerSkillController.UseSelectedSkill();
                 }

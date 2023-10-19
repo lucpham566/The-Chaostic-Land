@@ -60,25 +60,25 @@ public class PhotonPlayerInput : NetworkBehaviour
             inputInteract = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.1))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             inputSelectSkill = 1;
             inputUseSkill = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.2))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             inputSelectSkill = 2;
             inputUseSkill = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.3))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             inputSelectSkill = 3;
             inputUseSkill = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.4))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             inputSelectSkill = 4;
             inputUseSkill = true;
@@ -94,8 +94,6 @@ public class PhotonPlayerInput : NetworkBehaviour
         inputChangeTarget = false;
         inputInteract = false; 
         inputUseSkill = false;
-
-
     }
 
     public NetworkInputData GetNetworkInput()
@@ -109,6 +107,8 @@ public class PhotonPlayerInput : NetworkBehaviour
         networkInputData.inputChangeTarget = inputChangeTarget;
         networkInputData.inputInteract = inputInteract;
         networkInputData.moveInput = moveInput;
+        networkInputData.inputUseSkill = inputUseSkill;
+        networkInputData.inputSelectSkill = inputSelectSkill;
 
         return networkInputData;
     }

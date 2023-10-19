@@ -11,7 +11,7 @@ public class LightningSkill : SkillControl
     public float bulletLifetime = 5f; // Thời gian tồn tại của viên đạn (5 giây)
 
     public void Start (){
-        firePoint = PhotonPlayer.local.transform;
+        
     }
     public override void UseSkill()
     {
@@ -19,6 +19,7 @@ public class LightningSkill : SkillControl
         {
             base.UseSkill(); // Gọi hàm cơ sở trước khi thêm logic cụ thể
 
+            firePoint = PhotonPlayer.local.transform;
             // Thực hiện logic cụ thể cho FireballSkill ở đây
             Debug.Log("Casting fireball with damage: " + base.skillClass.damage);
             GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);

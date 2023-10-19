@@ -10,7 +10,8 @@ public struct NetworkInputData : INetworkInput
     public bool inputDefence;
     public bool inputChangeTarget;
     public bool inputInteract;
-    public int inputUseSkill;
+    public bool inputUseSkill;
+    public int inputSelectSkill;
     public int moveInput;
 
     public Vector2 direction;
