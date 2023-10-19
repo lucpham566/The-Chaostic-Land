@@ -36,7 +36,7 @@ public class PhotonPlayerController : NetworkBehaviour
     private void Start()
     {
 
-        playerCharacter = PhotonPlayer.localGameObject.GetComponent<PlayerCharacter>();
+        playerCharacter = GetComponent<PlayerCharacter>();
         characterAnimator = GetComponent<CharacterAnimator>();
 
         combo = 1;
