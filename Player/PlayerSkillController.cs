@@ -16,7 +16,10 @@ public class PlayerSkillController : MonoBehaviour
     {
         foreach (SkillClass skill in skillList)
         {
-           skills.Add(skill.skillPrefab.GetComponent<SkillControl>())
+            GameObject newObject = Instantiate(skill.skillPrefab, transform);
+            SkillControl skillControl = newObject.GetComponent<SkillControl>();
+            skills.Add(skillControl);
+            skillControl.cooldownTimer = 1001;
         }
     }
     // Hàm để chọn kỹ năng
@@ -27,7 +30,7 @@ public class PlayerSkillController : MonoBehaviour
         {
             currentSkillIndex = skillIndex; // Cập nhật chỉ số kỹ năng hiện tại
             selectedSkill = skills[currentSkillIndex];
-            skillIcon.sprite = selectedSkill.icon;
+            //skillIcon.sprite = selectedSkill.icon;
         }
     }
 
@@ -63,10 +66,7 @@ public class PlayerSkillController : MonoBehaviour
             // Sau khi sử dụng xong, bạn có thể đặt selectedSkill về null.
         }
     }
-    void Start()
-    {
-
-    }
+    
 
     // Update is called once per frame
     void Update()

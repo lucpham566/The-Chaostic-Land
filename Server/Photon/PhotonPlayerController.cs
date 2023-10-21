@@ -40,6 +40,7 @@ public class PhotonPlayerController : NetworkBehaviour
 
         playerCharacter = GetComponent<PlayerCharacter>();
         characterAnimator = GetComponent<CharacterAnimator>();
+        PlayerSkillController = GetComponent<PlayerSkillController>();
 
         combo = 1;
         comboTiming = 0.5f;

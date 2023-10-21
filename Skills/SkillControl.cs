@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class SkillControl : MonoBehaviour
 {
-    public Sprite icon;
     public float cooldownTimer;    // Biến thời gian đếm ngược
     protected bool isCooldown;
-    public SkillClass skillClass;
-
+    public float cooldownTime=5;
     private void Start()
     {
-        icon = skillClass.icon;
     }
     private void Update()
     {
@@ -28,8 +25,7 @@ public class SkillControl : MonoBehaviour
         if (!isCooldown)
         {
             // Thực hiện logic của kỹ năng ở đây
-            Debug.Log("Using skill: " + skillClass.skillName);
-            cooldownTimer = skillClass.cooldownTime;
+            cooldownTimer = cooldownTime;
             // Bắt đầu thời gian hồi chiêu
             StartCoroutine(Cooldown());
         }
@@ -42,7 +38,7 @@ public class SkillControl : MonoBehaviour
     private IEnumerator Cooldown()
     {
         isCooldown = true;
-        yield return new WaitForSeconds(skillClass.cooldownTime);
+        yield return new WaitForSeconds(cooldownTime);
         isCooldown = false;
     }
 }

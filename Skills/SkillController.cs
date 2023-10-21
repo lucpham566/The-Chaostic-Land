@@ -24,7 +24,7 @@ public class SkillController : MonoBehaviour
         {
             currentSkillIndex = skillIndex; // Cập nhật chỉ số kỹ năng hiện tại
             selectedSkill = skills[currentSkillIndex];
-            skillIcon.sprite = selectedSkill.icon;
+            //skillIcon.sprite = selectedSkill.icon;
         }
     }
 

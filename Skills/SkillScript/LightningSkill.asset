@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cfb229865079e343945ea930fa9807c, type: 3}
   m_Name: LightningSkill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: abcd
   icon: {fileID: 0}
   damage: 0
   manaCost: 0
   staminaCost: 0
   magicCost: 0
   cooldownTime: 2
-  skillControl: {fileID: 0}
+  skillPrefab: {fileID: 6541868852627129496, guid: e78ad0ae19df3084c9267c39397cb264, type: 3}

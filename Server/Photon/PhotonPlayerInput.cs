@@ -15,7 +15,7 @@ public class PhotonPlayerInput : NetworkBehaviour
     [SerializeField] bool inputUseSkill = false;
     [SerializeField] int inputSelectSkill = 0;
 
-    [SerializeField] int moveInput = 0;
+    [SerializeField] public int moveInput = 0;
     private void Update()
     {
         ResetData();

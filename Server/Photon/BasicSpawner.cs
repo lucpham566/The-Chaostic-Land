@@ -3,16 +3,28 @@ using Fusion.Sockets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UltimaQuestSystem.Example;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Unity.Collections.Unicode;
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     public NetworkPrefabRef _playerPrefab;
+    public NetworkPrefabRef _EnemiesPrefab;
+    private NetworkRunner _networkRunner;
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     public void OnConnectedToServer(NetworkRunner runner)
     {
+        Debug.Log("OnConnectedToServer");
+        if (_networkRunner.IsServer)
+        {
+            Vector3 spawnPosition = new Vector3(0, 0, 0);
+            NetworkObject networkObject = runner.Spawn(_EnemiesPrefab, spawnPosition, Quaternion.identity);
+        }
+       
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -29,6 +41,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner)
     {
+        Debug.Log("OnConnectedToServer");
+
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
@@ -74,10 +88,17 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log("có thằng join phòng");
         if (_networkRunner.IsServer)
         {
-            Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 1, 0);
+            Vector3 spawnPosition = new Vector3(0, 0, 0);
             NetworkObject networkObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player.PlayerId);
             _spawnedCharacters.Add(player, networkObject);
         }
+
+        if (_networkRunner.IsServer)
+        {
+            Vector3 spawnPosition = new Vector3(0, 0, 0);
+            NetworkObject networkObject = runner.Spawn(_EnemiesPrefab, spawnPosition, Quaternion.identity);
+        }
+
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -113,7 +134,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
     }
 
-    private NetworkRunner _networkRunner;
 
     // Start is called before the first frame update
     void Start()
@@ -129,7 +149,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     async void StartGame(GameMode mode)
     {
-        _networkRunner = gameObject.AddComponent<NetworkRunner>();
+        _networkRunner = gameObject.GetComponent<NetworkRunner>();
         _networkRunner.ProvideInput = true;
 
         await _networkRunner.StartGame(new StartGameArgs()
@@ -139,6 +159,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Scene = SceneManager.GetActiveScene().buildIndex,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
         });
+
+      
     }
 
     private void OnGUI()

@@ -1,16 +1,20 @@
+using Cinemachine;
 using Fusion;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PhotonPlayer : NetworkBehaviour, IPlayerLeft
 {
     public static PhotonPlayer local { get; set; }
     public GameObject localGameObject;
+    public GameObject allForPlayer;
+    CinemachineVirtualCamera cinemachineVirtualCamera;
 
     private void Awake()
     {
-        localGameObject = gameObject;
+        
     }
 
     public override void Spawned()
@@ -19,7 +23,12 @@ public class PhotonPlayer : NetworkBehaviour, IPlayerLeft
         {
             local = this;
             Debug.Log("local spawned");
-
+            localGameObject = gameObject;
+            cinemachineVirtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+            cinemachineVirtualCamera.LookAt = null;
+            cinemachineVirtualCamera.Follow = transform;
+            local = this;
+            GameObject newObject = Instantiate(allForPlayer);
         }
         else
         {
