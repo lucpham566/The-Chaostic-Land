@@ -95,10 +95,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             _spawnedCharacters.Add(player, networkObject);
         }
 
-        if (_networkRunner.IsServer)
-        {
-            enemySpawn.SpawnEnemyStart(runner);
-        }
 
     }
 
@@ -117,6 +113,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
+
     }
 
     public void OnSceneLoadStart(NetworkRunner runner)
@@ -161,6 +158,10 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
         });
 
+        if (_networkRunner.IsServer)
+        {
+            enemySpawn.SpawnEnemyStart(_networkRunner);
+        }
 
     }
 

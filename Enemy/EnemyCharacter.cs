@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyCharacter : MonoBehaviour, ITargetable
+public class EnemyCharacter : NetworkBehaviour, ITargetable
 {
     public string name = "enemy";
     public int MaxHealth;
@@ -48,7 +49,9 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     public bool isJumping;
     public bool isFalling;
     public bool isGrounded;
-    public bool isDeath;
+
+    [SerializeField]
+    [Networked] public bool isDeath { get; set; }
 
     public Rigidbody2D rb;
     public Animator animator;
@@ -164,8 +167,20 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
     {
         isDeath = true;
         animator.SetBool("Die", true);
-        Destroy(gameObject, delayInSecondsDie);
+        //Destroy(gameObject, delayInSecondsDie);
         DropItem();
+        gameObject.SetActive(false);
+
+    }
+
+    public void ResetProperties()
+    {
+        MaxHealth = enemyClass.maxHP;
+        Health = enemyClass.maxHP;
+        Armor = enemyClass.armor;
+        Damage = enemyClass.damage;
+        isDeath = false;
+        gameObject.SetActive(true);
     }
 
 
@@ -308,7 +323,7 @@ public class EnemyCharacter : MonoBehaviour, ITargetable
 
     private IEnumerator ReducedArmorOverTime(float time, int amountRate)
     {
-        int ArmorGiam = Armor/100*amountRate;
+        int ArmorGiam = Armor / 100 * amountRate;
         Armor -= ArmorGiam;
         yield return new WaitForSeconds(time);
         Armor += ArmorGiam;
