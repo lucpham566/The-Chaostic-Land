@@ -31,8 +31,9 @@ public class InventoryManager : MonoBehaviour
             slots[i] = slotsHolder.transform.GetChild(i).gameObject;
         }
 
-        playerEquipmentManager = PhotonPlayer.local.GetComponent<PlayerInventoryManager>();
-        items= playerEquipmentManager.items;
+        playerInventoryManager = PhotonPlayer.local.GetComponent<PlayerInventoryManager>();
+        playerEquipmentManager = PhotonPlayer.local.GetComponent<PlayerEquipmentManager>();
+        items = playerInventoryManager.items;
         
         RefreshUI();
     }

@@ -44,6 +44,9 @@ public class EquipmentManager : MonoBehaviour
             SlotButton slotButton = slotObject.GetComponent<SlotButton>();
             slotButton.itemClass = equipmentList[i].GetItem();
 
+            slotObject.transform.GetChild(1).GetComponent<Image>().enabled = true;
+            slotObject.transform.GetChild(1).GetComponent<Image>().sprite = equipmentList[i].GetItem().itemIcon;
+
         }
     }
 
