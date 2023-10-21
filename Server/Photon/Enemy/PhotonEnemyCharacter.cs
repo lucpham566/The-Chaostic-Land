@@ -165,8 +165,22 @@ public class PhotonEnemyCharacter : NetworkBehaviour, ITargetable
     {
         isDeath = true;
         animator.SetBool("Die", true);
-        Destroy(gameObject, delayInSecondsDie);
+        //Destroy(gameObject, delayInSecondsDie);
+        gameObject.SetActive(false);
         DropItem();
+        StartCoroutine(DieOverTime());
+
+    }
+
+    private IEnumerator DieOverTime()
+    {
+        yield return new WaitForSeconds(30);
+        MaxHealth = enemyClass.maxHP;
+        Health = enemyClass.maxHP;
+        Armor = enemyClass.armor;
+        Damage = enemyClass.damage;
+        isDeath = false;
+        gameObject.SetActive(true);
     }
 
 
