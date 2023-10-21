@@ -15,6 +15,8 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkPrefabRef _EnemiesPrefab;
     private NetworkRunner _networkRunner;
 
+    public EnemySpawn enemySpawn;
+
     private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
     public void OnConnectedToServer(NetworkRunner runner)
     {
@@ -24,7 +26,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Vector3 spawnPosition = new Vector3(0, 0, 0);
             NetworkObject networkObject = runner.Spawn(_EnemiesPrefab, spawnPosition, Quaternion.identity);
         }
-       
+
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -54,7 +56,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (PhotonPlayer.local)
         {
             PhotonPlayerInput photonPlayerInput = PhotonPlayer.local.GetComponent<PhotonPlayerInput>();
-            if (photonPlayerInput !=null)
+            if (photonPlayerInput != null)
             {
                 input.Set(photonPlayerInput.GetNetworkInput());
             }
@@ -97,6 +99,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             Vector3 spawnPosition = new Vector3(0, 0, 0);
             NetworkObject networkObject = runner.Spawn(_EnemiesPrefab, spawnPosition, Quaternion.identity);
+            enemySpawn.SpawnEnemyStart(NetworkRunner runner);
         }
 
     }
@@ -160,7 +163,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
         });
 
-      
+
     }
 
     private void OnGUI()

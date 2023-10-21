@@ -18,4 +18,12 @@ public class EnemySpawn : MonoBehaviour
     {
 
     }
+
+    public void SpawnEnemyStart(NetworkRunner runner)
+    {
+        foreach (EnemySpawnPosition enemyPosition in enemyList)
+        {
+            NetworkObject networkObject = runner.Spawn(enemyPosition.enemy, enemyPosition.enemyTransform.position, Quaternion.identity);
+        }
+    }
 }
