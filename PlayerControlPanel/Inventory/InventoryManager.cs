@@ -12,11 +12,14 @@ public class InventoryManager : MonoBehaviour
     public ItemClass itemRemove;
     public List<SlotClass> items = new List<SlotClass>();
 
+    public PlayerInventoryManager playerInventoryManager;
+
+
     public GameObject[] slots;
     public GameObject itemInforUI;
     public GameObject buttonContainer;
     public ItemClass itemSelected;
-    public EquipmentManager equipmentManager;
+    public PlayerEquipmentManager playerEquipmentManager;
 
     // Start is called before the first frame update
     void Start()
@@ -28,18 +31,19 @@ public class InventoryManager : MonoBehaviour
             slots[i] = slotsHolder.transform.GetChild(i).gameObject;
         }
 
-        AddItem(itemAdd,5);
-        RemoveItem(itemRemove,2);
+        playerEquipmentManager = PhotonPlayer.local.GetComponent<PlayerInventoryManager>();
+        items= playerEquipmentManager.items;
+        
         RefreshUI();
     }
     void Update()
     {
-        
+
         //showButtonInteractive();
     }
     private void RefreshUI()
     {
-        List<string> equipmentIDs = equipmentManager.equipmentList.Select(equipment => equipment.itemId).ToList();
+        List<string> equipmentIDs = playerEquipmentManager.equipmentList.Select(equipment => equipment.itemId).ToList();
         List<SlotClass> itemListShow = new List<SlotClass>(items);
         itemListShow.RemoveAll(item => equipmentIDs.Contains(item.GetItem().itemId));
 
@@ -50,7 +54,7 @@ public class InventoryManager : MonoBehaviour
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = itemListShow[i].GetItem().itemIcon;
-                if (itemListShow[i].GetQuantity()>1)
+                if (itemListShow[i].GetQuantity() > 1)
                 {
                     slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = itemListShow[i].GetQuantity().ToString();
                 }
@@ -61,7 +65,8 @@ public class InventoryManager : MonoBehaviour
                 slotButton.itemClass = itemListShow[i].GetItem();
 
             }
-            catch {
+            catch
+            {
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
                 slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
@@ -70,9 +75,9 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void AddItem(ItemClass item,int quantity)
+    public void AddItem(ItemClass item, int quantity)
     {
-        if ( item is EquipmentClass)
+        if (item is EquipmentClass)
         {
             items.Add(new SlotClass(item, 1));
         }
@@ -88,7 +93,7 @@ public class InventoryManager : MonoBehaviour
                 items.Add(new SlotClass(item, quantity));
             }
         }
-       
+
         RefreshUI();
     }
 
@@ -97,7 +102,7 @@ public class InventoryManager : MonoBehaviour
         SlotClass temp = ContainsItem(item);
         if (temp != null)
         {
-            if (temp.GetQuantity()>1)
+            if (temp.GetQuantity() > 1)
             {
                 temp.SubQuantity(quantity);
             }
@@ -121,13 +126,14 @@ public class InventoryManager : MonoBehaviour
         {
             return;
         }
-      
+
         RefreshUI();
     }
 
-    private SlotClass ContainsItem (ItemClass item)
+    private SlotClass ContainsItem(ItemClass item)
     {
-        foreach (SlotClass slot in items) {
+        foreach (SlotClass slot in items)
+        {
             if (slot.GetItem() == item)
             {
                 return slot;
@@ -140,7 +146,7 @@ public class InventoryManager : MonoBehaviour
     {
         if (itemSelected is EquipmentClass)
         {
-            equipmentManager.EquipItem((EquipmentClass)itemSelected);
+            playerEquipmentManager.EquipItem((EquipmentClass)itemSelected);
             RefreshUI();
             resetSelectedItem();
         }
@@ -150,8 +156,8 @@ public class InventoryManager : MonoBehaviour
     {
         if (itemSelected is EquipmentClass)
         {
-            equipmentManager.UnequipItem((EquipmentClass)itemSelected);
-            AddItem(itemSelected,1);
+            playerEquipmentManager.UnequipItem((EquipmentClass)itemSelected);
+            AddItem(itemSelected, 1);
             RefreshUI();
             resetSelectedItem();
         }
@@ -181,7 +187,7 @@ public class InventoryManager : MonoBehaviour
             buttonContainer.SetActive(true);
             if (itemSelected is EquipmentClass)
             {
-                if (equipmentManager.equipmentList.Contains(itemSelected))
+                if (playerEquipmentManager.equipmentList.Contains(itemSelected))
                 {
                     buttonContainer.transform.Find("ButtonUnequip").gameObject.SetActive(true);
                     buttonContainer.transform.Find("ButtonUse").gameObject.SetActive(false);

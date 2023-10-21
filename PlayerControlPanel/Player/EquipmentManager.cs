@@ -7,11 +7,10 @@ using UnityEngine.UI;
 public class EquipmentManager : MonoBehaviour
 {
     public List<EquipmentClass> equipmentList;
-    public UICharacter UICharacter;
-    public PlayerCharacter playerCharacter;
-    public GearEquipper gearEquipper;
     public GameObject slotsHolder;
     public GameObject[] slots;
+
+    public PlayerEquipmentManager playerEquipmentManager;
 
     // Start is called before the first frame update
     void Start()
@@ -22,54 +21,13 @@ public class EquipmentManager : MonoBehaviour
             slots[i] = slotsHolder.transform.GetChild(i).gameObject;
         }
 
-        playerCharacter = GetComponent<PlayerCharacter>();
-        gearEquipper = GetComponent<GearEquipper>();
-        RefreshUI();
-    }
-    public void EquipItem(EquipmentClass item)
-    {
-        bool itemTypeExists = false;
+        playerEquipmentManager = PhotonPlayer.local.GetComponent<PlayerEquipmentManager>();
 
-        for (int i = 0; i < equipmentList.Count; i++)
-        {
-            if (equipmentList[i].itemType == item.itemType)
-            {
-                // Nếu đã tồn tại, thay thế nó bằng item mới
-                equipmentList[i] = item;
-                itemTypeExists = true;
-                break;
-            }
-        }
-
-        if (!itemTypeExists)
-        {
-            // Nếu itemType chưa tồn tại, thêm item vào danh sách
-            equipmentList.Add(item);
-        }
+        equipmentList = playerEquipmentManager.equipmentList;
 
         RefreshUI();
-        UpdateProperties();
-
     }
-
-    public void UnequipItem(EquipmentClass item)
-    {
-        // Tìm và xóa itemType ra khỏi danh sách
-        for (int i = 0; i < equipmentList.Count; i++)
-        {
-            if (equipmentList[i].itemType == item.itemType)
-            {
-                equipmentList.RemoveAt(i);
-                break;
-            }
-        }
-
-        RefreshUI();
-        UpdateProperties();
-
-        // Cập nhật các thuộc tính của nhân vật sau khi tháo item ra khỏi trang bị.
-    }
-
+  
     private void RefreshUI()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -89,10 +47,5 @@ public class EquipmentManager : MonoBehaviour
         }
     }
 
-        private void UpdateProperties()
-    {
-        UICharacter.RefreshUI();
-        playerCharacter.AddEquipmentStats();
-        gearEquipper.LoadSkin();
-    }
+       
 }
