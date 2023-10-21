@@ -19,13 +19,12 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        playerCharacter = GetComponent<PlayerCharacter>();
+        playerCharacter = PhotonPlayer.local.GetComponent<PlayerCharacter>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
         UpdateUI();
     }
 
