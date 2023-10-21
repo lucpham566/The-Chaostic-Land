@@ -97,9 +97,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_networkRunner.IsServer)
         {
-            Vector3 spawnPosition = new Vector3(0, 0, 0);
-            NetworkObject networkObject = runner.Spawn(_EnemiesPrefab, spawnPosition, Quaternion.identity);
-            enemySpawn.SpawnEnemyStart(NetworkRunner runner);
+            enemySpawn.SpawnEnemyStart(runner);
         }
 
     }
@@ -152,7 +150,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     async void StartGame(GameMode mode)
     {
-        _networkRunner = gameObject.GetComponent<NetworkRunner>();
+        _networkRunner = gameObject.AddComponent<NetworkRunner>();
         _networkRunner.ProvideInput = true;
 
         await _networkRunner.StartGame(new StartGameArgs()

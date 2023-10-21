@@ -1,4 +1,4 @@
-using Fusion;
+﻿using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,7 +23,16 @@ public class EnemySpawn : MonoBehaviour
     {
         foreach (EnemySpawnPosition enemyPosition in enemyList)
         {
-            NetworkObject networkObject = runner.Spawn(enemyPosition.enemy, enemyPosition.enemyTransform.position, Quaternion.identity);
+            Debug.Log("Vào gen ra phần tử");
+            try
+            {
+                NetworkObject networkObject = runner.Spawn(enemyPosition.enemy, enemyPosition.enemyTransform.position, Quaternion.identity);
+
+            }
+            catch
+            {
+                Debug.Log("lỗi dấdà");
+            }
         }
     }
 }
