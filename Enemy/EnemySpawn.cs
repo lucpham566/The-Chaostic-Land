@@ -8,8 +8,6 @@ public class EnemySpawn : MonoBehaviour
     // Start is called before the first frame update
     public NetworkRunner _networkRunner;
     public List<EnemySpawnPosition> enemyList = new List<EnemySpawnPosition>();
-    public List<SlotClass> items = new List<SlotClass>();
-    public GameObject[] gameObjects;
     void Start()
     {
 
