@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 public class  EnemyPosition
 {
-    public int quantity=0;
+    public GameObject enemy;
+    public Transform enemyTransform;
 
     public EnemyPosition()
     {
-        quantity = 0;
+        enemy = null;
+        enemyTransform = null;
     }
 
-    public EnemyPosition(int quantity)
+    public EnemyPosition(GameObject enemy,Transform enemyTransform)
     {
-        this.quantity = quantity;
+        this.enemy = enemy;
+        this.enemyTransform = enemyTransform;
     }
 }
 
@@ -22,7 +25,7 @@ public class EnemySpawn : MonoBehaviour
     // Start is called before the first frame update
     public NetworkRunner _networkRunner;
     public List<EnemyPosition> enemyList;
-    
+
     public GameObject[] gameObjects;
     void Start()
     {
