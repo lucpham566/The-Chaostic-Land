@@ -6,9 +6,9 @@ using UnityEngine;
 public class EnemyCharacter : NetworkBehaviour, ITargetable
 {
     public string name = "enemy";
-    public int MaxHealth;
-    public int Health;
-    public int Armor;
+    [Networked] public int MaxHealth { get; set; }
+    [Networked] public int Health { get; set; }
+    [Networked] public int Armor { get; set; }
     public int ArmorMagic;
     public int Damage;
     public int staminaMax; // choáng
@@ -49,8 +49,6 @@ public class EnemyCharacter : NetworkBehaviour, ITargetable
     public bool isJumping;
     public bool isFalling;
     public bool isGrounded;
-
-    [SerializeField]
     [Networked] public bool isDeath { get; set; }
 
     public Rigidbody2D rb;
@@ -337,7 +335,7 @@ public class EnemyCharacter : NetworkBehaviour, ITargetable
             ItemClass droppedItem = possibleDrops[randomIndex];
 
             // Tạo ra một thể hiện của vật phẩm và đặt nó tại vị trí của quái.
-            GameObject newItem = Instantiate(itemPrefab, transform.position, Quaternion.identity);
+            NetworkObject newItem = Runner.Spawn(itemPrefab, transform.position, Quaternion.identity);
             Item item = newItem.GetComponent<Item>();
             item.item = droppedItem;
 

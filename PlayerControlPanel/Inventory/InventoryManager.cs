@@ -20,6 +20,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject buttonContainer;
     public ItemClass itemSelected;
     public PlayerEquipmentManager playerEquipmentManager;
+    public EquipmentManager equipmentManager;
 
     // Start is called before the first frame update
     void Start()
@@ -78,22 +79,7 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItem(ItemClass item, int quantity)
     {
-        if (item is EquipmentClass)
-        {
-            items.Add(new SlotClass(item, 1));
-        }
-        else
-        {
-            SlotClass slot = ContainsItem(item);
-            if (slot != null)
-            {
-                slot.AddQuantity(quantity);
-            }
-            else
-            {
-                items.Add(new SlotClass(item, quantity));
-            }
-        }
+        playerInventoryManager.AddItem(item, quantity);
 
         RefreshUI();
     }
@@ -145,10 +131,14 @@ public class InventoryManager : MonoBehaviour
 
     public void UserSellectedItem()
     {
+        Debug.Log("cos sanr pham ne");
+
         if (itemSelected is EquipmentClass)
         {
+            Debug.Log("cos sanr pham ne" + itemSelected.itemName);
             playerEquipmentManager.EquipItem((EquipmentClass)itemSelected);
             RefreshUI();
+            equipmentManager.RefreshUI();
             resetSelectedItem();
         }
     }
@@ -160,6 +150,7 @@ public class InventoryManager : MonoBehaviour
             playerEquipmentManager.UnequipItem((EquipmentClass)itemSelected);
             AddItem(itemSelected, 1);
             RefreshUI();
+            equipmentManager.RefreshUI();
             resetSelectedItem();
         }
     }

@@ -11,7 +11,7 @@ public class EnemyRangeAttack : MonoBehaviour
     {
 
         // Kiểm tra va chạm với collider dạng trigger
-        if (other.CompareTag("Player"))
+        if (other && other.CompareTag("Player"))
         {
             enemyController.isPlayerInRangeAttack = true;
         }
@@ -21,7 +21,7 @@ public class EnemyRangeAttack : MonoBehaviour
     {
 
         // Kiểm tra va chạm với collider dạng trigger
-        if (other.CompareTag("Player"))
+        if (other && other.CompareTag("Player"))
         {
             enemyController.isPlayerInRangeAttack = false;
         }

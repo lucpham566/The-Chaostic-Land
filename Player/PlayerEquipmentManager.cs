@@ -1,20 +1,28 @@
-﻿using System.Collections;
+﻿using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-public class PlayerEquipmentManager : MonoBehaviour
+public class PlayerEquipmentManager : NetworkBehaviour
 {
     public List<EquipmentClass> equipmentList;
     public PlayerCharacter playerCharacter;
     public GearEquipper gearEquipper;
+    [Networked(OnChanged = nameof(OnchangedTest))] public int ABCD { get; set; }
+
+    public static void OnchangedTest(Changed<PlayerEquipmentManager> changedd)
+    {
+        Debug.Log("đã thay đổi nè" + changedd.ToString());
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         playerCharacter = GetComponent<PlayerCharacter>();
         gearEquipper = GetComponent<GearEquipper>();
+        ABCD = 1;
     }
     public void EquipItem(EquipmentClass item)
     {
@@ -38,8 +46,11 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
 
         UpdateProperties();
+        ABCD = ABCD * -2;
 
     }
+
+
 
     public void UnequipItem(EquipmentClass item)
     {
@@ -58,7 +69,7 @@ public class PlayerEquipmentManager : MonoBehaviour
         // Cập nhật các thuộc tính của nhân vật sau khi tháo item ra khỏi trang bị.
     }
 
-        private void UpdateProperties()
+    private void UpdateProperties()
     {
         playerCharacter.AddEquipmentStats();
         gearEquipper.LoadSkin();

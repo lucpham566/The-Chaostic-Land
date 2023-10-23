@@ -9,7 +9,6 @@ public class UICharacter : MonoBehaviour
     public EquipmentManager equipmentManager;
     void Start()
     {
-        equipmentManager = PhotonPlayer.local.GetComponent<EquipmentManager>();
         RefreshUI();
     }
 

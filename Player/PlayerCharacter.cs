@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerCharacter : NetworkBehaviour
 {
     public int MaxHealth;
-    public int Health;
+    [Networked] public int Health { set; get; }
     public int Armor;
     public int Damage;
 

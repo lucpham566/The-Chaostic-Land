@@ -19,7 +19,6 @@ public class SlotButton: MonoBehaviour
     {
         resetActiveSlot();
         gameObject.GetComponent<Image>().color = new Color32(172, 255, 174, 255);
-
         if (itemClass != null)
         {   
             inventoryManager.itemSelected = itemClass.GetItem();

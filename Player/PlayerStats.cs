@@ -14,7 +14,6 @@ public class PlayerStats : MonoBehaviour
 
     public GameObject heathBar;
     public TextMeshProUGUI heathBarValue;
-    public GameObject heathBarMini;
     private PlayerCharacter playerCharacter;
 
     void Start()
@@ -37,7 +36,6 @@ public class PlayerStats : MonoBehaviour
         {
             heathBar.GetComponent<Image>().fillAmount = currentHeath / maxHeath;
             heathBarValue.GetComponent<TextMeshProUGUI>().text = currentHeath + "/" + maxHeath;
-            heathBarMini.GetComponent<Image>().fillAmount = currentHeath / maxHeath;
         }
 
     }

@@ -5,12 +5,12 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
     public GameObject tabListFrefab;
-    public PlayerController playerController;
+    public PhotonPlayerController playerController;
     public bool isOpenMenu = false;
     public Canvas canvas = null;
     void Start()
     {
-        playerController = PhotonPlayer.local.GetComponent<PlayerController>();
+        playerController = PhotonPlayer.local.GetComponent<PhotonPlayerController>();
         tabListFrefab.SetActive(false);
         canvas = GetComponent<Canvas>();    
     }

@@ -52,7 +52,7 @@ public class PhotonPlayerController : NetworkBehaviour
     {
         if (controlEnable)
         {
-            if (GetInput(out NetworkInputData data))
+            if (GetInput(out NetworkInputData data) && Runner.IsServer)
             {
                 if (!playerCharacter.isDashing)
                 {
@@ -67,6 +67,7 @@ public class PhotonPlayerController : NetworkBehaviour
                     if (data.inputAttack)
                     {
                         Attack();
+                        Debug.Log("Nhấn tấn công nè Runner.IsServer" + Runner.IsServer);
                         StartCoroutine(AttackCombo());
                         //data.inputAttack = false;
                     }
@@ -246,6 +247,7 @@ public class PhotonPlayerController : NetworkBehaviour
 
     private void GenAttackByJob()
     {
+        Debug.Log(characterAnimator.AccGE.Job + "characterAnimator.AccGE.Job");
         switch (characterAnimator.AccGE.Job)
         {
             case Jobs.Warrior:
@@ -291,11 +293,11 @@ public class PhotonPlayerController : NetworkBehaviour
     private void GenAttackCung()
     {
         Transform ArrowStartingTransform = transform.Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
-        GameObject newBullet = Instantiate(bulletPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation);
+        NetworkObject newBullet = Runner.Spawn(bulletPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation, Object.InputAuthority);
 
         // Lấy Rigidbody2D của viên đạn để thiết lập tốc độ
-        Rigidbody2D rb = newBullet.GetComponent<Rigidbody2D>();
-        PlayerDamage damage = newBullet.GetComponent<PlayerDamage>();
+        Rigidbody2D rb = newBullet.gameObject.GetComponent<Rigidbody2D>();
+        PlayerDamage damage = newBullet.gameObject.GetComponent<PlayerDamage>();
         damage.damge = playerCharacter.Damage;
         damage.destroyWhenCollide = true;
 
@@ -318,11 +320,11 @@ public class PhotonPlayerController : NetworkBehaviour
     private void GenAttackPhep()
     {
         Transform ArrowStartingTransform = transform.Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
-        GameObject newBullet = Instantiate(bulletMagicPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation);
+        NetworkObject newBullet = Runner.Spawn(bulletMagicPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation);
 
         // Lấy Rigidbody2D của viên đạn để thiết lập tốc độ
-        Rigidbody2D rb = newBullet.GetComponent<Rigidbody2D>();
-        PlayerDamage damage = newBullet.GetComponent<PlayerDamage>();
+        Rigidbody2D rb = newBullet.gameObject.GetComponent<Rigidbody2D>();
+        PlayerDamage damage = newBullet.gameObject.GetComponent<PlayerDamage>();
         damage.damge = playerCharacter.Damage;
         damage.destroyWhenCollide = true;
 
