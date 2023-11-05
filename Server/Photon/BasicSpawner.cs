@@ -147,8 +147,11 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     async void StartGame(GameMode mode)
     {
+        SceneManager.LoadScene("LoadingScene", LoadSceneMode.Additive);
+        Debug.Log("loading nè");
         _networkRunner = gameObject.AddComponent<NetworkRunner>();
         _networkRunner.ProvideInput = true;
+        Debug.Log("loading nè2");
 
         await _networkRunner.StartGame(new StartGameArgs()
         {
@@ -157,11 +160,14 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Scene = SceneManager.GetActiveScene().buildIndex,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>(),
         });
+        Debug.Log("loading nè3");
 
         if (_networkRunner.IsServer)
         {
             enemySpawn.SpawnEnemyStart(_networkRunner);
         }
+        SceneManager.UnloadScene("LoadingScene");
+        Debug.Log("loading xong nè");
 
     }
 
@@ -169,6 +175,16 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (_networkRunner == null)
         {
+            if (UserDataManager.Instance.Username == "lucpham566")
+            {
+                Debug.Log("run server nè");
+                StartGame(GameMode.Host);
+            }
+            else
+            {
+                StartGame(GameMode.Client);
+            }
+
             if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
             {
                 StartGame(GameMode.Host);

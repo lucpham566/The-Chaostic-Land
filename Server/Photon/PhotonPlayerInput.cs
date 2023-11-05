@@ -58,12 +58,14 @@ public class PhotonPlayerInput : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             inputInteract = true;
+            Debug.Log("vào nhân e nè ");
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             inputSelectSkill = 1;
             inputUseSkill = true;
+            Debug.Log("vào nhân 1 nè ");
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))

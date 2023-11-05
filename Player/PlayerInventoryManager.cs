@@ -1,19 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using Spine;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class ItemData
+{
+    public string instance_id;
+    public string item_id;
+}
+
+[System.Serializable]
+public class InventoryData
+{
+    public List<ItemData> items;
+}
+
+
 public class PlayerInventoryManager : MonoBehaviour
 {
     public ItemClass itemAdd;
     public ItemClass itemRemove;
     public List<SlotClass> items = new List<SlotClass>();
+    public TextAsset jsonFileName;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        // Deserialize JSON thành đối tượng PlayerData
+        InventoryData inventory = JsonUtility.FromJson<InventoryData>(jsonFileName.text);
+
+        foreach (var item in inventory.items)
+        {
+            Debug.Log("Instance ID: " + item.instance_id);
+            Debug.Log("Item ID: " + item.item_id);
+        }
+
         AddItem(itemAdd,5);
         RemoveItem(itemRemove,2);
     }

@@ -2,14 +2,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerCharacter : NetworkBehaviour
 {
-    public int MaxHealth;
-    [Networked] public int Health { set; get; }
-    public int Armor;
     public int Damage;
+
+    [Networked] public int MaxHealth { set; get; }
+    [Networked] public int Health { set; get; }
+    [Networked] public int Armor { set; get; }
+    public string playerName = "tên nhân vật";
 
     public int initMaxHealth;
     public int initArmor;
@@ -26,20 +29,20 @@ public class PlayerCharacter : NetworkBehaviour
 
 
     // các trạng thái
-    public bool dameable = true;
+    [Networked] public bool dameable { set; get; }
 
-    public bool isMove;
+    [Networked] public bool isMove { set; get; }
 
-    public bool isFalling;
-    public bool isJumping;
-    public bool isGrounded;
-    public bool isSliding;
-    public bool isAttacking;
-    public bool isDefend;
-    public bool moveEnable = true;
+    [Networked] public bool isFalling { set; get; }
+    [Networked] public bool isJumping { set; get; }
+    [Networked] public bool isGrounded { set; get; }
+    [Networked] public bool isSliding { set; get; }
+    [Networked] public bool isAttacking { set; get; }
+    [Networked] public bool isDefend { set; get; }
+    [Networked] public bool moveEnable { set; get; }
 
-    public bool canDash = true;
-    public bool isDashing = false;
+    [Networked] public bool canDash { set; get; }
+    [Networked] public bool isDashing { set; get; }
     public float dashingPower = 24f;
     public float dashingTime = 0.2f;
     public float dashingCooldown = 1f;
@@ -61,20 +64,12 @@ public class PlayerCharacter : NetworkBehaviour
     public PlayerEquipmentManager equipmentManager;
     public GearEquipper gearEquipper;
     public Transform transformCharacterGFX;
+    public TextMeshProUGUI playerNameUI;
     [SerializeField] private TrailRenderer tr; // hiệu ứng lướt
-
-    public PlayerCharacter(int health, int armor, int damage)
-    {
-        Health = health;
-        Armor = armor;
-        Damage = damage;
-    }
 
     private void Awake()
     {
-        initMaxHealth = MaxHealth;
-        initArmor = Armor;
-        initDamage = Damage;
+
     }
 
     private void Start()
@@ -89,8 +84,17 @@ public class PlayerCharacter : NetworkBehaviour
         characterAnimator = GetComponent<CharacterAnimator>();
         gearEquipper = GetComponent<GearEquipper>();
         transformCharacterGFX = transform.Find("CharacterGFX");
+        playerNameUI.text = playerName;
 
         AddEquipmentStats();
+
+        initMaxHealth = MaxHealth;
+        initArmor = Armor;
+        initDamage = Damage;
+        dameable = true;
+        moveEnable = true;
+        canDash = true;
+        isDashing = false;
     }
 
     private void FixedUpdate()
@@ -147,8 +151,8 @@ public class PlayerCharacter : NetworkBehaviour
     public void Attack()
     {
         playerAudio.PlayClipOneShot(playerAudio.swordSlashSound);
-        animator.SetTrigger("Attack");
-        characterAnimator.ChangeAnimation("Attack1");
+        //animator.SetTrigger("Attack");
+        //characterAnimator.ChangeAnimation("Attack1");
     }
 
     public void CheckDefend()
@@ -165,7 +169,12 @@ public class PlayerCharacter : NetworkBehaviour
     public void Defend()
     {
         isDefend = true;
-        characterAnimator.ChangeAnimation("Defence");
+        characterAnimator.AnimationToPlay = PlayerAnimations.Defence;
+    }
+
+    public void Attack1()
+    {
+        characterAnimator.AnimationToPlay = PlayerAnimations.Attack1;
     }
 
     public void DefendCancel()

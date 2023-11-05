@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6cfb229865079e343945ea930fa9807c, type: 3}
-  m_Name: LightningSkill
+  m_Name: TiaSetDonSkill
   m_EditorClassIdentifier: 
   skillName: abcd
   icon: {fileID: 0}

@@ -11,15 +11,29 @@ public class UITarget : MonoBehaviour
     public GameObject targetObject; 
     public GameObject UnitframeObject;
     public TextMeshProUGUI name;
+    public GameObject targetIcon;
 
     void Start()
     {
-        playerRangeTarget= PhotonPlayer.local.GetComponent<PlayerRangeTarget>();
+        //playerRangeTarget= PhotonPlayer.local.GetComponent<PlayerRangeTarget>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (playerRangeTarget.currentTarget != null)
+        {
+            targetIcon.SetActive(true);
+            Collider2D objectCollider = playerRangeTarget.currentTarget.GetComponent<Collider2D>();
+            Transform objectTransform = playerRangeTarget.currentTarget.GetComponent<Transform>();
+            float objectHeight = objectCollider.bounds.size.y;
+            targetIcon.transform.position = new Vector3(objectTransform.position.x, objectTransform.position.y + objectHeight / 2 + 0.5f, objectTransform.position.z);
+        }
+        else
+        {
+            targetIcon.SetActive(false);
+        }
+
         UpdateUI();
     }
 

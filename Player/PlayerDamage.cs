@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDamage : MonoBehaviour
+public class PlayerDamage : NetworkBehaviour
 {
     // Start is called before the first frame update
     public int damge;

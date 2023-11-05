@@ -24,7 +24,8 @@ public class PlayerEquipmentManager : NetworkBehaviour
         gearEquipper = GetComponent<GearEquipper>();
         ABCD = 1;
     }
-    public void EquipItem(EquipmentClass item)
+
+    public void RPC_EquipItem(EquipmentClass item)
     {
         bool itemTypeExists = false;
 
@@ -46,8 +47,6 @@ public class PlayerEquipmentManager : NetworkBehaviour
         }
 
         UpdateProperties();
-        ABCD = ABCD * -2;
-
     }
 
 

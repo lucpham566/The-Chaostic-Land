@@ -5,7 +5,7 @@ using UnityEngine;
 public class Parallax : MonoBehaviour
 {
     public Camera cam;
-    public Transform subject = PhotonPlayer.local.transform;
+    public Transform subject;
 
     float distanceFromSubject => transform.position.z - subject.position.z;
     float clippingPlane => (cam.transform.position.z + (distanceFromSubject>0?cam.farClipPlane:cam.nearClipPlane));

@@ -1,23 +1,30 @@
-﻿using System.Collections;
+﻿using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerSkillController : MonoBehaviour
+public class PlayerSkillController : NetworkBehaviour
 {
     public List<SkillClass> skillList;
     public List<SkillControl> skills;       // Danh sách các kỹ năng
     public Image skillIcon;          // Hình ảnh biểu tượng kỹ năng hiện tại (gắn vào UI)
 
     public SkillControl selectedSkill;     // Kỹ năng đang được chọn
-    private int currentSkillIndex;   // Chỉ số của kỹ năng hiện tại
+    public int currentSkillIndex;   // Chỉ số của kỹ năng hiện tại
+
 
     public void Start()
     {
         foreach (SkillClass skill in skillList)
         {
-            GameObject newObject = Instantiate(skill.skillPrefab, transform);
+            NetworkObject newObject = Runner.Spawn(skill.skillPrefab, transform.position, Quaternion.identity);
             SkillControl skillControl = newObject.GetComponent<SkillControl>();
+            skillControl.playerCharacter = transform.GetComponent<PlayerCharacter>();
+            skillControl.playerSkillController = transform.GetComponent<PlayerSkillController>();
+            skillControl.firePoint = transform;
+            skillControl.playerTransform = transform;
+
             skills.Add(skillControl);
             skillControl.cooldownTimer = 1001;
         }

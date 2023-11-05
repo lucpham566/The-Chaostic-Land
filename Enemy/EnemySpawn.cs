@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Unity.Collections.Unicode;
 
-public class EnemySpawn : MonoBehaviour
+public class EnemySpawn : NetworkBehaviour
 {
     // Start is called before the first frame update
     public NetworkRunner _networkRunner;
@@ -25,6 +25,7 @@ public class EnemySpawn : MonoBehaviour
                 {
                     if (enemyPosition.enemyNetworkObject.isDeath && !enemyPosition.isSpawning)
                     {
+                        Destroy(enemyPosition.enemyNetworkObject);
                         StartCoroutine(DieOverTime(enemyPosition));
                     }
                 }
@@ -57,10 +58,12 @@ public class EnemySpawn : MonoBehaviour
         enemyPosition.isSpawning = true;
         yield return new WaitForSeconds(30);
         Debug.Log("đợi xong 30s");
+        NetworkObject networkObject = Runner.Spawn(enemyPosition.enemy, enemyPosition.enemyTransform.position, Quaternion.identity);
+        enemyPosition.enemyNetworkObject = networkObject.GetComponent<EnemyCharacter>();
 
-        enemyPosition.enemyNetworkObject.gameObject.SetActive(true);
-        enemyPosition.enemyNetworkObject.transform.position = enemyPosition.enemyTransform.position;
-        enemyPosition.enemyNetworkObject.ResetProperties();
+        //enemyPosition.enemyNetworkObject.gameObject.SetActive(true);
+        //enemyPosition.enemyNetworkObject.transform.position = enemyPosition.enemyTransform.position;
+        //enemyPosition.enemyNetworkObject.ResetProperties();
         enemyPosition.isSpawning = false;
 
     }

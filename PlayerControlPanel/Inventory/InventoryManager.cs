@@ -136,7 +136,7 @@ public class InventoryManager : MonoBehaviour
         if (itemSelected is EquipmentClass)
         {
             Debug.Log("cos sanr pham ne" + itemSelected.itemName);
-            playerEquipmentManager.EquipItem((EquipmentClass)itemSelected);
+            playerEquipmentManager.RPC_EquipItem((EquipmentClass)itemSelected);
             RefreshUI();
             equipmentManager.RefreshUI();
             resetSelectedItem();

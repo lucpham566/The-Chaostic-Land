@@ -34,6 +34,7 @@ public class PhotonPlayerController : NetworkBehaviour
 
     public GameObject bulletPrefab;
     public GameObject bulletMagicPrefab;
+    NetworkObjectManager networkObjectManager = NetworkObjectManager.Instance;
 
     private void Start()
     {
@@ -97,7 +98,6 @@ public class PhotonPlayerController : NetworkBehaviour
                         playerCharacter.Jump();
                     }
                 }
-
 
                 if (data.inputUseSkill && data.inputSelectSkill>0)
                 {
@@ -218,7 +218,7 @@ public class PhotonPlayerController : NetworkBehaviour
             playerCharacter.Attack();
             playerCharacter.isAttacking = true;
             combo = 1;
-            characterAnimator.ChangeAnimation("Attack" + combo);
+            characterAnimator.AnimationToPlay = PlayerAnimations.Attack1;
             comboTempo = comboTiming;
             yield return new WaitForSeconds(TocDoRaDon);
             GenAttackByJob();
@@ -235,7 +235,7 @@ public class PhotonPlayerController : NetworkBehaviour
                 combo = 1;
             }
 
-            characterAnimator.ChangeAnimation("Attack" + combo);
+            characterAnimator.AnimationToPlay = PlayerAnimations.Attack2;
             comboTempo = comboTiming;
             yield return new WaitForSeconds(TocDoRaDon);
             GenAttackByJob();
@@ -292,7 +292,7 @@ public class PhotonPlayerController : NetworkBehaviour
 
     private void GenAttackCung()
     {
-        Transform ArrowStartingTransform = transform.Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
+        Transform ArrowStartingTransform = transform.Find("CharacterGFX").Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
         NetworkObject newBullet = Runner.Spawn(bulletPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation, Object.InputAuthority);
 
         // Lấy Rigidbody2D của viên đạn để thiết lập tốc độ
@@ -314,12 +314,13 @@ public class PhotonPlayerController : NetworkBehaviour
         }
 
         // Hủy viên đạn sau một khoảng thời gian
-        Destroy(newBullet, 3);
+        networkObjectManager.DestroyNetworkObject(newBullet, 3);
+
     }
 
     private void GenAttackPhep()
     {
-        Transform ArrowStartingTransform = transform.Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
+        Transform ArrowStartingTransform = transform.Find("CharacterGFX").Find("AttackSpawnPoint").Find("FirePoint_Shoot1");
         NetworkObject newBullet = Runner.Spawn(bulletMagicPrefab, ArrowStartingTransform.position, ArrowStartingTransform.rotation);
 
         // Lấy Rigidbody2D của viên đạn để thiết lập tốc độ
@@ -341,7 +342,8 @@ public class PhotonPlayerController : NetworkBehaviour
         }
 
         // Hủy viên đạn sau một khoảng thời gian
-        Destroy(newBullet, 3);
+        networkObjectManager.DestroyNetworkObject(newBullet, 3);
+
     }
 
     private void GenAttackChienBinh()
@@ -374,9 +376,9 @@ public class PhotonPlayerController : NetworkBehaviour
         {
 
         }
-        GameObject attackObject = Instantiate(attackPrefab, spawnPosition, transform.rotation);
+        NetworkObject attackObject = Runner.Spawn(attackPrefab, spawnPosition, Quaternion.identity);
         PlayerDamage damage = attackObject.GetComponent<PlayerDamage>();
         damage.damge = playerCharacter.Damage;
-        Destroy(attackObject, attackDuration);
+        networkObjectManager.DestroyNetworkObject(attackObject,attackDuration);
     }
 }
