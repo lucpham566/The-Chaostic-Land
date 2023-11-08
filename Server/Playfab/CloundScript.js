@@ -120,7 +120,8 @@ const App = {
     UserData: {
         HP: "hp",
         MaxHP: "maxHP",
-        Equipment: "equipment"
+        Equipment: "equipment",
+        Stats: "stats"
     },
     CatalogItems: {
         UnpackClassName: "unpack",
@@ -130,10 +131,20 @@ const App = {
     },
     Config: {
         StartingHP: 100,
+        StartingDamage: 10,
         StartingLevel: 1,
         StartingXP: 0,
         PermissionPublic: "Public",
-        PermissionPrivate: "Private"
+        PermissionPrivate: "Private",
+        PlayerDefaultStats: {
+            hp: 100,
+            mana: 100,
+            stamina: 100,
+            damge: 10,
+            magic: 10,
+            deffence_damge: 10,
+            deffence_magic: 10,
+        }
     }
 };
 /*
@@ -163,10 +174,6 @@ handlers.SetPlayerStaticData = function (args, context) {
             {
                 StatisticName: "PlayerDamage",
                 Value: args.PlayerDamage
-            },
-            {
-                StatisticName: "PlayerHighScore",
-                Value: args.PlayerHighScore
             }
         ]
     };
@@ -176,6 +183,30 @@ handlers.SetPlayerStaticData = function (args, context) {
     // the PlayFab API, so you don't have to write extra code to issue HTTP requests. 
     var playerStatResult = server.UpdatePlayerStatistics(request);
 };
+
+handlers.CreateCharacter = function (args, context) {
+    var statisticUpdates = [
+        {
+            StatisticName: App.Statistics.Level,
+            Value: 1
+        },
+        {
+            StatisticName: App.Statistics.Kills,
+            Value: 0
+        },
+        {
+            StatisticName: App.Statistics.XP,
+            Value: 0
+        }
+    ]
+
+    App.UpdatePlayerStatistics(currentPlayerId, statisticUpdates);
+    returnResult = App.UpdateUserInternalData(currentPlayerId, {
+        [App.UserData.Stats]: JSON.stringify(App.Config.PlayerDefaultStats)
+    }, null, true);
+
+};
+
 
 handlers.SetPlayerTitleData = function (args, context) {
 
@@ -208,11 +239,12 @@ handlers.GetDataUserLogin = function (args, context) {
 handlers.playerLogin = function (args, context) {
     const response = {
         playerName: null,
-        playerHP: 0,
+        playerHP: 100,
         equipment: {},
         xp: 0,
         level: 1,
-        inventory: null
+        inventory: null,
+        userData: {}
     };
     // Get inventory and convert from the server model to the client model (they look identical, except to TypeScript)
     const inventory = App.GetUserInventory(currentPlayerId);
@@ -221,21 +253,118 @@ handlers.playerLogin = function (args, context) {
         VirtualCurrency: inventory.VirtualCurrency,
         VirtualCurrencyRechargeTimes: inventory.VirtualCurrencyRechargeTimes
     };
-    
+
     let userData = server.GetPlayerStatistics({
-        PlayFabId:currentPlayerId
+        PlayFabId: currentPlayerId
     });
 
     const Statistics = userData.Statistics;
 
-    const dataPlayerName = Statistics.find(i=>i.StatisticName === App.Statistics.PlayerName)
+    const dataPlayerName = Statistics.find(i => i.StatisticName === App.Statistics.PlayerName)
     if (dataPlayerName && dataPlayerName.Value) {
         response.playerName = dataPlayerName.Value;
+        return { playerName: dataPlayerName.Value };
     }
     response.userData = userData;
 
     return response;
 };
+
+
+handlers.playerInfo = function (args, context) {
+    const playerId = args.playerId;
+    const response = {
+        playerStats: App.Config.PlayerDefaultStats,
+        equipment: {},
+        equipmentDetail: {},
+        xp: 0,
+        level: 1,
+        inventory: null
+    };
+    // Get inventory and convert from the server model to the client model (they look identical, except to TypeScript)
+    const inventory = App.GetUserInventory(playerId);
+    response.inventory = {
+        Inventory: inventory.Inventory,
+        VirtualCurrency: inventory.VirtualCurrency,
+        VirtualCurrencyRechargeTimes: inventory.VirtualCurrencyRechargeTimes
+    };
+    // Give new players some stats using user internal data
+    const userDataRecords = [App.UserData.HP, App.UserData.Equipment, App.UserData.MaxHP, App.UserData.Stats];
+    let userData = App.GetUserData(playerId, userDataRecords);
+    const userInternalData = App.GetUserInternalData(playerId, userDataRecords);
+    // Hey, I borked this up when I first made this game. User data is writable by the client.
+    // Whoops! Super insecure. Now I have these 15 lines to convert user data to internal data.
+    // Check to see if you are a user whose private stats should be in internal data
+    const isUserDataNull = App.IsNull(userData.Data) || App.IsNull(Object.keys(userData.Data));
+    const isUserDataInternalNull = App.IsNull(userInternalData.Data) || App.IsNull(Object.keys(userInternalData.Data));
+    if (isUserDataNull && isUserDataInternalNull) {
+        // You're an utterly new player. Use internal data.
+    }
+    else if (!isUserDataNull && isUserDataInternalNull) {
+        // You're an old player that hasn't been migrated yet.
+        // Set your internal data with what's new and clear out your regular user data
+        App.UpdateUserInternalData(playerId, convertUserDataResultToStringDictionary(userData.Data), null, false);
+        App.UpdateUserData(playerId, null, userDataRecords);
+    }
+    else if (isUserDataNull && !isUserDataInternalNull) {
+        // You've been converted. Swap your user data for the results of the internal data call.
+        userData = userInternalData;
+    }
+   
+    // We also need to know your current XP and level
+    const statistics = App.GetPlayerStatistics(playerId, [App.Statistics.Level, App.Statistics.XP]);
+    const statisticXP = statistics.find(s => s.StatisticName === App.Statistics.XP);
+    if (!App.IsNull(statisticXP)) {
+        response.xp = statisticXP.Value;
+    }
+    const statisticLevel = statistics.find(s => s.StatisticName === App.Statistics.Level);
+    if (!App.IsNull(statisticLevel)) {
+        response.level = statisticLevel.Value;
+    }
+    // And return any equipment which existing users might have
+    if (!App.IsNull(userData.Data[App.UserData.Equipment])) {
+        response.equipment = JSON.parse(userData.Data[App.UserData.Equipment].Value);
+
+        let equipmentDetail = {};
+        const equipment = response.equipment;
+        const itemList = inventory.Inventory;
+        for (const key in equipment) {
+            if (equipment.hasOwnProperty(key)) {
+                const itemInstanceId = equipment[key];
+
+                const correspondingItem = itemList.find(item => item.ItemInstanceId === itemInstanceId);
+
+                if (correspondingItem) {
+                    equipmentDetail[key] = correspondingItem;
+
+                }
+
+
+            }
+        }
+        response.equipmentDetail = equipmentDetail;
+
+    }
+
+    if (!App.IsNull(userData.Data[App.UserData.Stats])) {
+        response.equipment = JSON.parse(userData.Data[App.UserData.Stats].Value);
+    }
+
+    return response;
+};
+
+
+handlers.GetPlayerStatistics = function (args, context) {
+
+    let userData = server.GetPlayerStatistics({
+        PlayFabId: currentPlayerId
+    });
+
+    const Statistics = userData.Statistics;
+
+    return Statistics;
+};
+
 
 handlers.equipItem = function (args, context) {
     const currentEquipment = App.GetUserInternalData(currentPlayerId, [App.UserData.Equipment]).Data;
@@ -257,6 +386,30 @@ handlers.equipItem = function (args, context) {
         }, null, true);
     }
     App.WritePlayerEvent(currentPlayerId, "equipped_item", args);
+    return returnResult;
+};
+
+handlers.unEquipItem = function (args, context) {
+
+    const currentEquipment = App.GetUserInternalData(currentPlayerId, [App.UserData.Equipment]).Data;
+    let returnResult = null;
+    const equipmentToRemove = args.itemType; // Ví dụ: loại bỏ trang bị vũ khí
+
+    // Kiểm tra xem trang bị cần gỡ bỏ có trong dữ liệu trang bị không
+    if (currentEquipment[App.UserData.Equipment]) {
+        const currentEquipmentData = JSON.parse(currentEquipment[App.UserData.Equipment].Value);
+
+        // Kiểm tra xem trang bị cần gỡ bỏ có trong dữ liệu hiện tại không
+        if (currentEquipmentData[equipmentToRemove]) {
+            // Gỡ bỏ trang bị bằng cách xóa nó khỏi dữ liệu trang bị
+            delete currentEquipmentData[equipmentToRemove];
+
+            // Cập nhật dữ liệu trang bị sau khi gỡ bỏ
+            returnResult = App.UpdateUserInternalData(currentPlayerId, {
+                [App.UserData.Equipment]: JSON.stringify(currentEquipmentData)
+            }, null, true);
+        }
+    }
     return returnResult;
 };
 
@@ -283,9 +436,6 @@ handlers.helloWorld = function (args, context) {
     // (https://api.playfab.com/playstream/docs/PlayStreamEventModels/player/player_executed_cloudscript)
     return { messageValue: message };
 };
-
-
-
 
 // This is a simple example of making a PlayFab server API call
 handlers.makeAPICall = function (args, context) {
