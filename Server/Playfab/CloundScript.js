@@ -146,7 +146,7 @@ const App = {
             hp: 100,
             mana: 100,
             stamina: 100,
-            damge: 10,
+            damage: 10,
             magic: 10,
             deffence_damge: 10,
             deffence_magic: 10,
@@ -286,15 +286,10 @@ handlers.playerInfo = function (args, context) {
         equipmentDetail: {},
         xp: 0,
         level: 1,
-        inventory: null
     };
     // Get inventory and convert from the server model to the client model (they look identical, except to TypeScript)
     const inventory = App.GetUserInventory(playerId);
-    response.inventory = {
-        Inventory: inventory.Inventory,
-        VirtualCurrency: inventory.VirtualCurrency,
-        VirtualCurrencyRechargeTimes: inventory.VirtualCurrencyRechargeTimes
-    };
+   
     // Give new players some stats using user internal data
     const userDataRecords = [App.UserData.HP, App.UserData.Equipment, App.UserData.MaxHP, App.UserData.Stats];
     let userData = App.GetUserData(playerId, userDataRecords);
@@ -355,14 +350,34 @@ handlers.playerInfo = function (args, context) {
 
     if (!App.IsNull(userData.Data[App.UserData.Stats])) {
         response.playerStats = JSON.parse(userData.Data[App.UserData.Stats].Value);
+
+        const equipmentArray = Object.values(response.equipmentDetail).map(item => item.CustomData);
+
+        // Hàm kết hợp trang bị
+        function combineStats(baseStats, equipment) {
+            return equipment.reduce((result, item) => {
+                for (const key in item) {
+                    if (result.hasOwnProperty(key)) {
+                        result[key] += Number(item[key]);
+                    } else {
+                        result[key] = Number(item[key]);
+                    }
+                }
+                return result;
+            }, { ...baseStats });
+        }
+
+        // Kết hợp PlayerDefaultStats với mảng trang bị
+        const newPlayerStats = combineStats(response.playerStats, equipmentArray);
+
+        response.playerStats = newPlayerStats;
+
     }
 
     // lấy thông tin player
     const playerProfile = App.GetPlayerProfile(playerId, { ShowDisplayName: true });
-    log.info("playerDisplayName" + JSON.stringify(playerProfile));
 
     const playerDisplayName = playerProfile?.DisplayName;
-    log.info("playerDisplayName" + playerDisplayName);
 
 
     if (!App.IsNull(playerDisplayName)) {
