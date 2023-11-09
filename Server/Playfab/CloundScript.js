@@ -31,6 +31,12 @@ const App = {
             StatisticNames: statisticNames,
         }).Statistics;
     },
+    GetPlayerProfile(playerId, ProfileConstraints) {
+        return server.GetPlayerProfile({
+            PlayFabId: playerId,
+            ProfileConstraints: ProfileConstraints,
+        }).PlayerProfile;
+    },
     UpdatePlayerStatistics(playerId, statistics) {
         return server.UpdatePlayerStatistics({
             PlayFabId: playerId,
@@ -274,6 +280,7 @@ handlers.playerLogin = function (args, context) {
 handlers.playerInfo = function (args, context) {
     const playerId = args.playerId;
     const response = {
+        displayName: "display name",
         playerStats: App.Config.PlayerDefaultStats,
         equipment: {},
         equipmentDetail: {},
@@ -310,7 +317,7 @@ handlers.playerInfo = function (args, context) {
         // You've been converted. Swap your user data for the results of the internal data call.
         userData = userInternalData;
     }
-   
+
     // We also need to know your current XP and level
     const statistics = App.GetPlayerStatistics(playerId, [App.Statistics.Level, App.Statistics.XP]);
     const statisticXP = statistics.find(s => s.StatisticName === App.Statistics.XP);
@@ -347,8 +354,21 @@ handlers.playerInfo = function (args, context) {
     }
 
     if (!App.IsNull(userData.Data[App.UserData.Stats])) {
-        response.equipment = JSON.parse(userData.Data[App.UserData.Stats].Value);
+        response.playerStats = JSON.parse(userData.Data[App.UserData.Stats].Value);
     }
+
+    // lấy thông tin player
+    const playerProfile = App.GetPlayerProfile(playerId, { ShowDisplayName: true });
+    log.info("playerDisplayName" + JSON.stringify(playerProfile));
+
+    const playerDisplayName = playerProfile?.DisplayName;
+    log.info("playerDisplayName" + playerDisplayName);
+
+
+    if (!App.IsNull(playerDisplayName)) {
+        response.displayName = playerDisplayName;
+    }
+
 
     return response;
 };
